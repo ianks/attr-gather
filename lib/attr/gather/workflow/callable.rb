@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'dry/monads'
+require 'attr/gather/workflow/task_executor'
 
 module Attr
   module Gather
@@ -13,18 +14,12 @@ module Attr
 
         def call(input)
           result_attrs = self.class.tasks.reduce(input.dup) do |memo, task|
-            task = fetch_task_by_name(task.name)
-            task_result = task.call(memo)
+            executor = TaskExecutor.new(task, container: self.class.container)
+            task_result = executor.call(memo)
             memo.merge(task_result)
           end
 
           Success(result_attrs)
-        end
-
-        private
-
-        def fetch_task_by_name(name)
-          self.class.container.resolve(name)
         end
       end
     end
