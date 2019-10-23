@@ -1,0 +1,12 @@
+{
+  "solargraph.commandPath": "./bin/solargraph",
+  "coc.preferences.formatOnSaveFiletypes": [
+    "ruby"
+  ],
+  "solargraph.autoformat": true,
+  "solargraph.formatting": true,
+  "solargraph.diagnostics": true,
+  "suggest.autoTrigger": "always",
+  "suggest.minTriggerInputLength": 2,
+  "suggest.triggerAfterInsertEnter": true
+}

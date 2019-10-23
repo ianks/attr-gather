@@ -1,0 +1,17 @@
+AllCops:
+  UseCache: true
+  CacheRootDirectory: './tmp/cache'
+  TargetRubyVersion: 2.5
+
+Metrics/BlockLength:
+  Exclude:
+    - spec/**/*.rb
+
+Metrics/LineLength:
+  Exclude:
+    - ./attr-gather.gemspec
+    - ./bin/**/*
+
+Naming/FileName:
+  Exclude:
+    - ./lib/attr-gather.rb
