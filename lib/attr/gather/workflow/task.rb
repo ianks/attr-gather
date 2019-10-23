@@ -11,6 +11,14 @@ module Attr
           @name = name
           @depends_on = depends_on
         end
+
+        def depends_on?(other_task)
+          depends_on.include?(other_task.name)
+        end
+
+        def fullfilled_given_remaining_tasks?(task_list)
+          task_list.all? { |list_task| !depends_on?(list_task) }
+        end
       end
     end
   end
