@@ -7,10 +7,6 @@ module Attr
       #
       # @api public
       module DSL
-        def tasks
-          @tasks ||= TaskGraph.new
-        end
-
         # Defines a task with name and options
         #
         # @param task_name [Symbol] the name of the task
