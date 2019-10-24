@@ -10,6 +10,9 @@ module Attr
     # Main mixin for functionality. Adds the ability to turn a class into a
     # workflow.
     module Workflow
+      # @!parse extend DSL
+      # @!parse include Callable
+
       def self.included(klass)
         klass.extend(DSL)
         klass.include(Callable)
