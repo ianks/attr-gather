@@ -20,7 +20,7 @@ module Attr
           batch.map do |task|
             task_proc = container.resolve(task.name)
             result = Dry::Monads::Task[executor] { task_proc.call(input) }
-            TaskExecutionResult.new(Time.now, task, result)
+            TaskExecutionResult.new(task, result)
           end
         end
       end
