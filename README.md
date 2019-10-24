@@ -1,6 +1,6 @@
 # Attr::Gather
 
-[![Actions Status](https://github.com/ianks/attr-gather/workflows/.github/workflows/ruby.yml/badge.svg)](https://github.com/ianks/att-gather/actions)
+[![Actions Status](https://github.com/ianks/attr-gather/workflows/.github/workflows/ruby.yml/badge.svg)](https://github.com/ianks/attr-gather/actions)
 
 A gem for creating simple workflows to enhance entities with extra attributes.
 At a high level, `attr-gather` provides a process to sync attributes from many
