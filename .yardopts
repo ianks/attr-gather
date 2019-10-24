@@ -1,3 +1,4 @@
 --readme README.md
 --title 'attr-gather api docs'
+--fail-on-warning
 --embed-mixins
