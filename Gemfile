@@ -10,6 +10,6 @@ group :development, :test do
   gem 'rubocop'
 end
 
-group :development do
+group :local do
   gem 'solargraph'
 end

@@ -13,7 +13,7 @@ jobs:
     - name: Build
       run: |
         gem install bundler
-        bundle install --with=test --jobs 4 --retry 3
+        bundle install --without=local --jobs 4 --retry 3
     - name: Test
       run: bundle exec rake spec
     - name: Lint
