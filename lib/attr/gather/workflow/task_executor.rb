@@ -7,16 +7,20 @@ module Attr
       class TaskExecutor
         include Dry::Monads[:task]
 
-        attr_accessor :task, :container
+        attr_accessor :batch, :container
 
-        def initialize(task, container:)
-          @task = task
+        def initialize(batch, container:)
+          @batch = batch
           @container = container
         end
 
         def call(input)
-          task_proc = container.resolve(task.name)
-          task_proc.call(input)
+          results = batch.map do |task|
+            task_proc = container.resolve(task.name)
+            Task { task_proc.call(input) }
+          end
+
+          results.map(&:value!)
         end
       end
     end

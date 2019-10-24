@@ -23,7 +23,7 @@ module Attr
 
           task :tag_from_images do |t|
             t.provider = :image_tagger
-            t.depends_on = %i[pim_catalog xml_catalog]
+            t.depends_on = %i[fetch_from_xml_catalog fetch_from_pim]
           end
         end
 
@@ -55,10 +55,17 @@ module Attr
       it 'runs the workflow in order' do
         result = workflow.call(foo: :bar)
 
+        first_batch_results = {
+          foo: :bar,
+          fetch_from_pim_ran: be_a(Hash),
+          fetch_from_xml_catalog_ran: { foo: :bar }
+        }
+
         expect(result.value!).to include(
-          fetch_from_xml_catalog_ran: have_key(:foo),
-          fetch_from_pim_ran: have_key(:fetch_from_xml_catalog_ran),
-          tag_from_images_ran: have_key(:fetch_from_pim_ran)
+          **first_batch_results,
+          tag_from_images_ran: {
+            **first_batch_results
+          }
         )
       end
     end

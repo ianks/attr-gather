@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'tsort'
+require 'attr/gather/workflow/dot_serializer'
 
 module Attr
   module Gather
@@ -8,23 +9,37 @@ module Attr
       # @api private
       class TaskGraph
         class UnfinishableError < StandardError; end
+        class InvalidTaskDepedencyError < StandardError; end
 
         include TSort
 
-        attr_reader :task_list
+        attr_reader :tasks_hash
 
         def initialize(tasks: [])
-          @task_list = tasks.dup
+          @tasks_hash = {}
+          tasks.each { |t| self << t }
         end
 
         def <<(task)
-          task_list << task
+          validate_for_insert!(task)
+
+          tasks_hash.keys.each do |t|
+            tasks_hash[t] << task if t.depends_on?(task)
+            tasks_hash[t].uniq!
+          end
+          tasks_hash[task] = all_dependencies_for_task(task)
+        end
+
+        def runnable_tasks
+          tsort.take_while do |task|
+            task.fullfilled_given_remaining_tasks?(tasks_hash.keys)
+          end
         end
 
         def each_batch
           return enum_for(:each_batch) unless block_given?
 
-          to_execute = tsort.reverse
+          to_execute = tsort
 
           until to_execute.empty?
             batch = to_execute.take_while do |task|
@@ -35,26 +50,29 @@ module Attr
 
             validate_finishable!(batch, to_execute)
 
-            yield batch
+            yield batch.reverse
           end
         end
 
         alias to_a tsort
 
         def to_h
-          task_list.each_with_object({}) do |task, memo|
-            memo[task] = all_dependencies_for_task(task)
-          end
+          tasks_hash
+        end
+
+        def to_dot(preview: false)
+          serializer = DotSerializer.new(self)
+          preview ? serializer.preview : serializer.to_dot
         end
 
         private
 
-        def tsort_each_node
-          task_list.each { |t| yield t }
+        def tsort_each_child(node, &blk)
+          to_h[node].each(&blk)
         end
 
-        def tsort_each_child(node)
-          task_list.each { |t| yield(t) if t.depends_on?(node) }
+        def tsort_each_node(&blk)
+          to_h.each_key(&blk)
         end
 
         def validate_finishable!(batch, to_execute)
@@ -64,8 +82,17 @@ module Attr
                 'make sure that no task dependencies can be left unfulfilled'
         end
 
+        def validate_for_insert!(task)
+          if task.depends_on.all? { |t| tasks_hash.keys.map(&:name).include?(t) }
+            return
+          end
+
+          raise InvalidTaskDepedencyError,
+                "could not find a matching task for a dependency for #{task.name}"
+        end
+
         def all_dependencies_for_task(input_task)
-          task_list.select { |task| input_task.depends_on?(task) }.to_set
+          tasks_hash.keys.select { |task| input_task.depends_on?(task) }
         end
       end
     end

@@ -17,7 +17,7 @@ module Attr
         end
 
         def fullfilled_given_remaining_tasks?(task_list)
-          task_list.all? { |list_task| !depends_on?(list_task) }
+          task_list.none? { |list_task| depends_on?(list_task) }
         end
       end
     end

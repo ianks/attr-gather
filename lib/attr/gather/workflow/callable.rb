@@ -12,11 +12,18 @@ module Attr
           klass.include Dry::Monads[:result]
         end
 
+        # TODO: factor our
+        def aggregator
+          lambda do |input, result|
+            result.reduce(input.dup, &:merge)
+          end
+        end
+
         def call(input)
-          result_attrs = self.class.tasks.reduce(input.dup) do |memo, task|
-            executor = TaskExecutor.new(task, container: self.class.container)
-            task_result = executor.call(memo)
-            memo.merge(task_result)
+          result_attrs = self.class.tasks.each_batch.reduce(input.dup) do |memo, batch|
+            executor = TaskExecutor.new(batch, container: self.class.container)
+            result = executor.call(memo)
+            aggregator.call(memo, result)
           end
 
           Success(result_attrs)

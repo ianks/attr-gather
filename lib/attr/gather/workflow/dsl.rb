@@ -12,10 +12,9 @@ module Attr
         end
 
         def task(task_name)
-          @tasks ||= []
           task = Task.new(name: task_name)
           yield task
-          @tasks << task
+          tasks << task
         end
 
         def container(cont = nil)
