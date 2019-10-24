@@ -13,10 +13,10 @@ module Attr
           klass.include Dry::Monads[:result]
         end
 
-        # TODO: factor our
+        # TODO: factor out
         def aggregator
-          lambda do |input, result|
-            result.reduce(input.dup, &:merge)
+          lambda do |input, results|
+            results.reduce(input.dup) { |memo, res| memo.merge(res.value!) }
           end
         end
 

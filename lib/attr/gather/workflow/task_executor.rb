@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'dry/monads/task'
+require 'attr/gather/workflow/task_execution_result'
 
 module Attr
   module Gather
@@ -16,13 +17,11 @@ module Attr
         end
 
         def call(input)
-          results = batch.map do |task|
+          batch.map do |task|
             task_proc = container.resolve(task.name)
-            Dry::Monads::Task[executor] { task_proc.call(input) }
+            result = Dry::Monads::Task[executor] { task_proc.call(input) }
+            TaskExecutionResult.new(Time.now, task, result)
           end
-
-          # TODO: implement error handling
-          results.map(&:value!)
         end
       end
     end
