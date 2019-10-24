@@ -2,6 +2,7 @@
 
 require 'dry/monads'
 require 'attr/gather/workflow/task_executor'
+require 'attr/gather/workflow/async_task_executor'
 
 module Attr
   module Gather
@@ -20,13 +21,23 @@ module Attr
         end
 
         def call(input)
-          result_attrs = self.class.tasks.each_batch.reduce(input.dup) do |memo, batch|
-            executor = TaskExecutor.new(batch, container: self.class.container)
+          result_attrs = each_task_batch.reduce(input.dup) do |memo, batch|
+            executor = AsyncTaskExecutor.new(batch, container: container)
             result = executor.call(memo)
             aggregator.call(memo, result)
           end
 
           Success(result_attrs)
+        end
+
+        private
+
+        def container
+          self.class.container
+        end
+
+        def each_task_batch
+          self.class.tasks.each_batch
         end
       end
     end
