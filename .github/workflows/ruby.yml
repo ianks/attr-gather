@@ -2,7 +2,7 @@
 name: Build + Test + Lint
 on: [push]
 jobs:
-  _-_-_:
+  build-test-lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1

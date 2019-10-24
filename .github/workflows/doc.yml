@@ -6,7 +6,7 @@ on:
       - master
       - ci
 jobs:
-  _-_-_:
+  doc:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
