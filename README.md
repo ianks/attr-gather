@@ -8,7 +8,7 @@ sources (third party APIs, legacy databases, etc).
 
 ## Links
 
-* [API Documentation](http://dry-rb.org/gems/attr-gather/)
+* [API Documentation](https://www.rubydoc.info/gems/attr-gather)
 
 ## Usage
 
