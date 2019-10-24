@@ -8,6 +8,7 @@ gemspec
 group :development, :test do
   gem 'pry'
   gem 'rubocop'
+  gem 'yard'
 end
 
 group :local do
