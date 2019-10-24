@@ -91,6 +91,7 @@ DEPENDENCIES
   rspec (~> 3.0)
   rubocop
   solargraph
+  yard
 
 BUNDLED WITH
    2.0.2

@@ -23,16 +23,17 @@ module Attr
         def <<(task)
           validate_for_insert!(task)
 
-          tasks_hash.keys.each do |t|
+          registered_tasks.each do |t|
             tasks_hash[t] << task if t.depends_on?(task)
             tasks_hash[t].uniq!
           end
+
           tasks_hash[task] = all_dependencies_for_task(task)
         end
 
         def runnable_tasks
           tsort.take_while do |task|
-            task.fullfilled_given_remaining_tasks?(tasks_hash.keys)
+            task.fullfilled_given_remaining_tasks?(registered_tasks)
           end
         end
 
@@ -78,21 +79,27 @@ module Attr
         def validate_finishable!(batch, to_execute)
           return unless batch.empty? && !to_execute.empty?
 
-          raise UnfinishableError,
-                'make sure that no task dependencies can be left unfulfilled'
+          # TODO: statically verify this
+          raise UnfinishableError, 'task dependencies are not fulfillable'
         end
 
         def validate_for_insert!(task)
-          if task.depends_on.all? { |t| tasks_hash.keys.map(&:name).include?(t) }
-            return
-          end
+          return if depended_on_tasks_exist?(task)
 
           raise InvalidTaskDepedencyError,
-                "could not find a matching task for a dependency for #{task.name}"
+                "could not find a matching task for #{task.name}"
         end
 
         def all_dependencies_for_task(input_task)
-          tasks_hash.keys.select { |task| input_task.depends_on?(task) }
+          registered_tasks.select { |task| input_task.depends_on?(task) }
+        end
+
+        def registered_tasks
+          tasks_hash.keys
+        end
+
+        def depended_on_tasks_exist?(task)
+          task.depends_on.all? { |t| registered_tasks.map(&:name).include?(t) }
         end
       end
     end

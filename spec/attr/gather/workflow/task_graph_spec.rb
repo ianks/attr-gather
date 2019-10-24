@@ -8,7 +8,7 @@ module Attr
     module Workflow
       RSpec.describe TaskGraph do
         describe '#<<' do
-          it 'raises when a corresponding task for depends_on is not registered' do
+          it 'raises when a depends_on task does not exist' do
             graph = described_class.new
 
             expect do
