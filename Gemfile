@@ -12,5 +12,6 @@ group :development, :test do
 end
 
 group :local do
+  gem 'http'
   gem 'solargraph'
 end

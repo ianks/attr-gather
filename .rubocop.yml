@@ -15,3 +15,8 @@ Metrics/LineLength:
 Naming/FileName:
   Exclude:
     - ./lib/attr-gather.rb
+
+Style/Documentation:
+  Exclude:
+    - ./examples/**/*
+    - ./spec/**/*
