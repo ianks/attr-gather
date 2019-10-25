@@ -5,17 +5,32 @@ require 'attr/gather/aggregators/base'
 module Attr
   module Gather
     module Aggregators
-      # Deeply merges results in order from first to last
+      # Deep merges result hashes
       #
       # @api public
       class DeepMerge < Base
+        # Initialize a new DeepMerge aggregator
+        #
+        # @param reverse [Boolean] deep merge results in reverse order
+        #
+        # @api private
+        def initialize(reverse: false)
+          @reverse = reverse
+        end
+
         def call(input, results_array)
+          results_array = results_array.reverse_each if reverse?
+
           results_array.reduce(input.dup) do |memo, res|
             deep_merge(memo, res.value!)
           end
         end
 
         private
+
+        def reverse?
+          @reverse
+        end
 
         def deep_merge(hash, other)
           Hash[hash].merge(other) do |_, orig, new|
