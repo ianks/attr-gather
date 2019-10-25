@@ -3,7 +3,6 @@
 require 'dry/monads'
 require 'attr/gather/workflow/task_executor'
 require 'attr/gather/workflow/async_task_executor'
-require 'attr/gather/aggregators/ordered_deep_merge'
 
 module Attr
   module Gather
@@ -14,9 +13,8 @@ module Attr
           klass.include Dry::Monads[:result]
         end
 
-        # TODO: factor out
         def aggregator
-          Aggregators::OrderedDeepMerge.new
+          self.class.aggregator
         end
 
         def call(input)

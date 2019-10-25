@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'attr/gather/version'
-require 'attr/gather/workflow'
 
 module Attr
   module Gather
@@ -9,3 +8,6 @@ module Attr
     # Your code goes here...
   end
 end
+
+require 'attr/gather/workflow'
+require 'attr/gather/aggregators'

@@ -68,6 +68,30 @@ module Attr
           }
         )
       end
+
+      it 'has a configurable aggregator' do
+        container = Dry::Container.new.tap do |c|
+          c.register :fetch_from_pim do |_input|
+            { nested: { one: 1 } }
+          end
+
+          c.register :fetch_from_xml_catalog do |_input|
+            { nested: { two: 2 } }
+          end
+
+          c.register :tag_from_images do |_input|
+            { nested: { three: 3 } }
+          end
+        end
+
+        workflow_class.aggregator(:shallow_merge)
+        workflow_class.container(container)
+
+        workflow = workflow_class.new
+        result = workflow.call({})
+
+        expect(result.value!).to eql(nested: { three: 3 })
+      end
     end
   end
 end

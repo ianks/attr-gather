@@ -67,6 +67,32 @@ module Attr
           @container = cont if cont
           @container
         end
+
+        # Configures the result aggregator
+        #
+        # Aggregators make is possible to build custom logic about
+        # how results should be "merged" together. For example,
+        # yuo could build and aggregator that prioritizes the
+        # values of some tasks over others.
+        #
+        # @example
+        #   class EnhanceUserProfile
+        #     extend Attr::Gather::Workflow
+        #
+        #     aggregator :ordered_deep_merge
+        #   end
+        #
+        # @param agg [#call] the aggregator to use
+        #
+        # @api public
+        def aggregator(agg = nil)
+          if agg.nil? && !defined?(@aggregator)
+            @aggregator = Aggregators.default
+          end
+
+          @aggregator = Aggregators.resolve(agg) if agg
+          @aggregator
+        end
       end
     end
   end
