@@ -13,8 +13,8 @@ module Attr
       #
       # Registered aggregators can be accessed by name
       #
-      # @param name [Symbol]
-      # @param aggregator [#call]
+      # @param name [Symbol] name of the aggregator
+      # @yield [options] block to initialize the aggregator
       def self.register_aggregator(name, &blk)
         Registry.register(name, &blk)
       end

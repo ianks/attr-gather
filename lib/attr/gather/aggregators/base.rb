@@ -3,10 +3,10 @@
 module Attr
   module Gather
     module Aggregators
-      # @abstract Subclass and override {#run} to implement
+      # @abstract Subclass and override {#call} to implement
       #   a custom Aggregator class.
       class Base
-        def call(_input, _results_array)
+        def call(_original_input, _results_array)
           raise NotImplementedError
         end
       end
