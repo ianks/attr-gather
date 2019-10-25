@@ -18,12 +18,10 @@ module Attr
         #     # ...
         #
         #     task :fetch_database_info do |t|
-        #       t.provider = :users_database
         #       t.depends_on = []
         #     end
         #
         #     task :fetch_avatar_info do |t|
-        #       t.provider   = :gravatar_api
         #       t.depends_on = [:fetch_gravatar_info]
         #     end
         #   end

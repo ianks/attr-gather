@@ -25,6 +25,8 @@ module Attr
         # @return [Dry::Monads::Result]
         #
         # @note For more information, check out {https://dry-rb.org/gems/dry-monads/1.0/result}
+        #
+        # @api public
         def call(input)
           final_results = []
 
