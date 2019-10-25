@@ -18,12 +18,14 @@ module Attr
           @reverse = reverse
         end
 
-        def call(input, results_array)
-          results_array = results_array.reverse_each if reverse?
+        def call(input, execution_results)
+          items = reverse? ? execution_results.reverse_each : execution_results
 
-          results_array.reduce(input.dup) do |memo, res|
-            memo.merge(res.value!)
+          result = items.reduce(input.dup) do |memo, res|
+            memo.merge(res.result.value!)
           end
+
+          Success(result)
         end
 
         private

@@ -34,10 +34,11 @@ module Attr
         # @yield [Attr::Gather::Workflow::Task] A task to configure
         #
         # @api public
-        def task(task_name)
-          task = Task.new(name: task_name)
+        def task(task_name, opts = EMPTY_HASH)
+          task = Task.new(name: task_name, **opts)
           yield task
           tasks << task
+          self
         end
 
         # Defines a container for task dependencies
@@ -85,12 +86,13 @@ module Attr
         # @param agg [#call] the aggregator to use
         #
         # @api public
-        def aggregator(agg = nil)
+        def aggregator(agg = nil, opts = EMPTY_HASH)
           if agg.nil? && !defined?(@aggregator)
             @aggregator = Aggregators.default
+            return @aggregator
           end
 
-          @aggregator = Aggregators.resolve(agg) if agg
+          @aggregator = Aggregators.resolve(agg, opts) if agg
           @aggregator
         end
       end

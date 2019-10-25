@@ -6,11 +6,6 @@ module Attr
   module Gather
     # Namespace for aggregators
     module Aggregators
-      # Error raised when no aggregator is found
-      class NoAggregatorFoundError < Attr::Gather::Error; end
-
-      # Register a named aggregator
-      #
       # Registered aggregators can be accessed by name
       #
       # @param name [Symbol] name of the aggregator
@@ -24,29 +19,27 @@ module Attr
       # @param name [Symbol]
       #
       # @return [#call]
-      def self.resolve(name)
-        Registry.resolve(name)
-      rescue Dry::Container::Error => e
-        raise NoAggregatorFoundError, e.message
+      def self.resolve(name, opts = Attr::Gather::EMPTY_HASH)
+        Registry.resolve(name, opts)
       end
 
       # The default aggregator if none is specified
       #
       # @return [Attr::Gather::Aggregators::DeepMerge]
       def self.default
-        @default = Registry.resolve(:deep_merge)
+        @default = resolve(:deep_merge)
       end
 
-      register_aggregator(:deep_merge) do
+      register_aggregator(:deep_merge) do |opts|
         require 'attr/gather/aggregators/deep_merge'
 
-        DeepMerge.new
+        DeepMerge.new(opts)
       end
 
-      register_aggregator(:shallow_merge) do
+      register_aggregator(:shallow_merge) do |opts|
         require 'attr/gather/aggregators/shallow_merge'
 
-        ShallowMerge.new
+        ShallowMerge.new(opts)
       end
     end
   end

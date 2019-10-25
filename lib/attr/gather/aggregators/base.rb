@@ -6,6 +6,8 @@ module Attr
       # @abstract Subclass and override {#call} to implement
       #   a custom Aggregator class.
       class Base
+        include Dry::Monads::Result::Mixin
+
         def call(_original_input, _results_array)
           raise NotImplementedError
         end

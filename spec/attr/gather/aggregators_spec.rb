@@ -19,7 +19,7 @@ module Attr
         it 'raises a meaningful error when no aggregator is found' do
           expect do
             described_class.resolve(:invalid)
-          end.to raise_error(Aggregators::NoAggregatorFoundError)
+          end.to raise_error(Aggregators::Registry::NoAggregatorFoundError)
         end
       end
     end

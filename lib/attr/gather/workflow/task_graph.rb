@@ -51,7 +51,7 @@ module Attr
 
             validate_finishable!(batch, to_execute)
 
-            yield batch.reverse
+            yield batch
           end
         end
 
