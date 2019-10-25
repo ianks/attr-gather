@@ -79,7 +79,7 @@ module Attr
         #   class EnhanceUserProfile
         #     extend Attr::Gather::Workflow
         #
-        #     aggregator :ordered_deep_merge
+        #     aggregator :deep_merge
         #   end
         #
         # @param agg [#call] the aggregator to use

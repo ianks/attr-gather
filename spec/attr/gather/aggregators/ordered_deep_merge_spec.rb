@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require 'attr/gather/aggregators/ordered_deep_merge'
+require 'attr/gather/aggregators/deep_merge'
 
 module Attr
   module Gather
     module Aggregators
-      RSpec.describe OrderedDeepMerge do
+      RSpec.describe DeepMerge do
         describe '#call' do
           it 'deeply merges results' do
             res = subject.call(

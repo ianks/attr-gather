@@ -32,15 +32,15 @@ module Attr
 
       # The default aggregator if none is specified
       #
-      # @return [Attr::Gather::Aggregators::OrderedDeepMerge]
+      # @return [Attr::Gather::Aggregators::DeepMerge]
       def self.default
-        @default = Registry.resolve(:ordered_deep_merge)
+        @default = Registry.resolve(:deep_merge)
       end
 
-      register_aggregator(:ordered_deep_merge) do
-        require 'attr/gather/aggregators/ordered_deep_merge'
+      register_aggregator(:deep_merge) do
+        require 'attr/gather/aggregators/deep_merge'
 
-        OrderedDeepMerge.new
+        DeepMerge.new
       end
 
       register_aggregator(:shallow_merge) do

@@ -8,7 +8,7 @@ module Attr
       # Deeply merges results in order from first to last
       #
       # @api public
-      class OrderedDeepMerge < Base
+      class DeepMerge < Base
         def call(input, results_array)
           results_array.reduce(input.dup) do |memo, res|
             deep_merge(memo, res.value!)

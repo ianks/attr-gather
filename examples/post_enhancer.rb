@@ -52,7 +52,7 @@ class EnhanceUserProfile
 
   container MyContainer
 
-  aggregator :ordered_deep_merge
+  aggregator :deep_merge
 
   task :fetch_post do |t|
     t.depends_on = []
