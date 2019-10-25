@@ -6,34 +6,60 @@ module Attr
   module Gather
     module Aggregators
       RSpec.describe ShallowMerge do
-        describe '#call' do
-          it 'shallow merges results' do
-            res = subject.call(
-              { user: { name: 'ian' } },
-              [
-                val(user: { id: 1 }),
-                val(user: { email: 't@t.com' })
-              ]
-            )
+        context 'when used with default options' do
+          subject(:aggregator) { described_class.new }
 
-            expect(res).to eql(user: { email: 't@t.com' })
+          describe '#call' do
+            it 'deeply merges results' do
+              res = aggregator.call(
+                { user: { name: 'ian' } },
+                [
+                  val(user: { id: 1 }),
+                  val(user: { email: 't@t.com' })
+                ]
+              )
+
+              expect(res).to eql(user: { email: 't@t.com' })
+            end
+
+            it 'prioritizes results from later tasks' do
+              res = aggregator.call(
+                { user: { name: 'ian' } },
+                [
+                  val(user: { id: 1 }),
+                  val(user: { id: 2 })
+                ]
+              )
+
+              expect(res).to eql(user: { id: 2 })
+            end
           end
 
-          it 'prioritizes based on order' do
-            res = subject.call(
-              { user: { name: 'ian' } },
-              [
-                val(user: { id: 1 }),
-                val(user: { id: 2 })
-              ]
-            )
-
-            expect(res).to eql(user: { id: 2 })
+          def val(hash)
+            double(value!: hash)
           end
         end
 
-        def val(hash)
-          double(value!: hash)
+        context 'when used with reverse: true' do
+          subject(:aggregator) { described_class.new(reverse: true) }
+
+          describe '#call' do
+            it 'prioritizes results from earlier tasks' do
+              res = aggregator.call(
+                { user: { name: 'ian' } },
+                [
+                  val(user: { id: 1 }),
+                  val(user: { id: 2 })
+                ]
+              )
+
+              expect(res).to eql(user: { id: 1 })
+            end
+          end
+
+          def val(hash)
+            double(value!: hash)
+          end
         end
       end
     end
