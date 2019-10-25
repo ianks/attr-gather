@@ -6,6 +6,8 @@ module Attr
   module Gather
     module Aggregators
       RSpec.describe DeepMerge do
+        include_context 'task execution result'
+
         context 'when used with default options' do
           subject(:aggregator) { described_class.new }
 
@@ -55,7 +57,7 @@ module Attr
         end
 
         def val(hash)
-          instance_double(Workflow::TaskExecutionResult, result: double(value!: hash))
+          task_exeution_result(hash)
         end
       end
     end
