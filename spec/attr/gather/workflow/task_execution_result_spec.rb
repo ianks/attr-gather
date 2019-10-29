@@ -24,6 +24,21 @@ module Attr
             expect(task_execution_result.started_at).to respond_to(:year)
           end
         end
+
+        describe '#as_json' do
+          it 'is serializable as a hash' do
+            task = Task.new(name: :foobar, depends_on: [])
+            result = Concurrent::Promise.fulfill(Hash[foo: :bar])
+            task_execution_result = described_class.new(task, result)
+
+            expect(task_execution_result.as_json).to include(
+              started_at: respond_to(:year),
+              task: { name: :foobar, depends_on: [] },
+              state: :fulfilled,
+              value: { foo: :bar }
+            )
+          end
+        end
       end
     end
   end

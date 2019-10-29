@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'dry/monads/task'
+require 'concurrent'
 require 'attr/gather/workflow/task_execution_result'
 
 module Attr
@@ -19,7 +19,9 @@ module Attr
         def call(input)
           batch.map do |task|
             task_proc = container.resolve(task.name)
-            result = Dry::Monads::Task[executor] { task_proc.call(input) }
+            result = Concurrent::Promise.execute(executor: executor) do
+              task_proc.call(input)
+            end
             TaskExecutionResult.new(task, result)
           end
         end

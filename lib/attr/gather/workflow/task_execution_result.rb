@@ -12,7 +12,7 @@ module Attr
       #     @return [Attr::Gather::Workflow::Task] task that was run
       #
       # # @!attribute [r] result
-      #     @return [Dry::Monad::Task] a monad wrapping the state of the task
+      #     @return [Concurrent::Promise] the result promise of the the task
       #
       # @api public
       TaskExecutionResult = Struct.new(:task, :result) do
@@ -29,6 +29,19 @@ module Attr
         # @note For more information, check out {https://dry-rb.org/gems/dry-monads/1.0/task/#extracting-result}
         def value!
           result.value!
+        end
+
+        # Represents the TaskExecutionResult as a hash
+        #
+        # @return [Hash]
+        def as_json
+          state = result.state
+          value = result.value
+
+          { started_at: started_at,
+            task: task.as_json,
+            state: state,
+            value: value }
         end
       end
     end

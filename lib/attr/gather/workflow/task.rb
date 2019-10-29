@@ -19,6 +19,10 @@ module Attr
         def fullfilled_given_remaining_tasks?(task_list)
           task_list.none? { |list_task| depends_on?(list_task) }
         end
+
+        def as_json
+          { name: name, depends_on: depends_on }
+        end
       end
     end
   end
