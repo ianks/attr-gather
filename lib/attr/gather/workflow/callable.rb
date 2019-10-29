@@ -28,8 +28,10 @@ module Attr
         # @api public
         def call(input)
           final_results = []
+          tasks = []
 
           each_task_batch.reduce(input.dup) do |aggregated_input, batch|
+            tasks.concat(batch)
             executor_results = execute_batch(aggregated_input, batch)
             final_results << executor_results
             aggregator.call(aggregated_input, executor_results).value!

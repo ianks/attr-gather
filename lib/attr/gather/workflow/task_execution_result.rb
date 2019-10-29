@@ -23,10 +23,16 @@ module Attr
           super
         end
 
+        # @!attribute [r] state
+        #   @return [:unscheduled, :pending, :processing, :rejected, :fulfilled]
+        def state
+          result.state
+        end
+
         # Extracts the result, this is an unsafe operation that blocks the
         # operation, and returns either the value or an exception.
         #
-        # @note For more information, check out {https://dry-rb.org/gems/dry-monads/1.0/task/#extracting-result}
+        # @note For more information, check out {https://ruby-concurrency.github.io/concurrent-ruby/1.1.5/Concurrent/Concern/Obligation.html#value!-instance_method}
         def value!
           result.value!
         end
@@ -35,7 +41,6 @@ module Attr
         #
         # @return [Hash]
         def as_json
-          state = result.state
           value = result.value
 
           { started_at: started_at,

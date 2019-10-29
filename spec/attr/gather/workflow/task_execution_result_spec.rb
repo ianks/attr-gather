@@ -25,6 +25,18 @@ module Attr
           end
         end
 
+        describe '#state' do
+          it 'uses the result promise state' do
+            result = double(state: :pending)
+            task = instance_double(Task)
+            task_execution_result = described_class.new(task, result)
+
+            expect(task_execution_result).to have_attributes(
+              state: result.state
+            )
+          end
+        end
+
         describe '#as_json' do
           it 'is serializable as a hash' do
             task = Task.new(name: :foobar, depends_on: [])
