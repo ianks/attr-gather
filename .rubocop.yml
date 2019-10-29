@@ -11,6 +11,7 @@ Metrics/LineLength:
   Exclude:
     - ./attr-gather.gemspec
     - ./bin/**/*
+    - ./examples/**/*
 
 Naming/FileName:
   Exclude:

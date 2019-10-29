@@ -5,7 +5,7 @@ module Attr
     module Workflow
       # @api private
       class Task
-        attr_accessor :provider, :depends_on, :name
+        attr_accessor :depends_on, :name
 
         def initialize(name:, depends_on: [])
           @name = name

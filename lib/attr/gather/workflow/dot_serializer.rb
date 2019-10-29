@@ -23,7 +23,7 @@ module Attr
         end
 
         def preview
-          Tempfile.open do |tf|
+          Tempfile.open(['task-graph-preview', '.svg']) do |tf|
             IO.popen("dot -Tsvg -o #{tf.path}", 'w') { |p| p.write(to_dot) }
             `xdg-open #{tf.path}`
           end

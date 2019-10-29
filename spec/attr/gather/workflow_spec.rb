@@ -12,17 +12,14 @@ module Attr
           include Attr::Gather::Workflow
 
           task :fetch_from_xml_catalog do |t|
-            t.provider = :xml_catalog
             t.depends_on = []
           end
 
           task :fetch_from_pim do |t|
-            t.provider = :pim_catalog
             t.depends_on = []
           end
 
           task :tag_from_images do |t|
-            t.provider = :image_tagger
             t.depends_on = %i[fetch_from_xml_catalog fetch_from_pim]
           end
         end
@@ -67,6 +64,28 @@ module Attr
             **first_batch_results
           }
         )
+      end
+
+      describe '.aggregator' do
+        it 'has a configurable aggregator' do
+          simple_workflow_class.aggregator(:shallow_merge)
+          simple_workflow_class.container(simple_container)
+
+          workflow = simple_workflow_class.new
+          result = workflow.call({})
+
+          expect(result.value!).to eql(id: :second)
+        end
+
+        it 'has configurable options' do
+          simple_workflow_class.aggregator(:shallow_merge, reverse: true)
+          simple_workflow_class.container(simple_container)
+
+          workflow = simple_workflow_class.new
+          result = workflow.call({})
+
+          expect(result.value!).to eql(id: :first)
+        end
       end
     end
   end

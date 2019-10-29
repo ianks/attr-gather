@@ -103,7 +103,7 @@ module Attr
               [
                 [t_one],
                 [t_two],
-                [t_four, t_three]
+                [t_three, t_four]
               ]
             )
           end

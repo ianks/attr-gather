@@ -7,10 +7,6 @@ module Attr
       #
       # @api public
       module DSL
-        def tasks
-          @tasks ||= TaskGraph.new
-        end
-
         # Defines a task with name and options
         #
         # @param task_name [Symbol] the name of the task
@@ -22,12 +18,10 @@ module Attr
         #     # ...
         #
         #     task :fetch_database_info do |t|
-        #       t.provider = :users_database
         #       t.depends_on = []
         #     end
         #
         #     task :fetch_avatar_info do |t|
-        #       t.provider   = :gravatar_api
         #       t.depends_on = [:fetch_gravatar_info]
         #     end
         #   end
@@ -38,10 +32,11 @@ module Attr
         # @yield [Attr::Gather::Workflow::Task] A task to configure
         #
         # @api public
-        def task(task_name)
-          task = Task.new(name: task_name)
+        def task(task_name, opts = EMPTY_HASH)
+          task = Task.new(name: task_name, **opts)
           yield task
           tasks << task
+          self
         end
 
         # Defines a container for task dependencies
@@ -70,6 +65,33 @@ module Attr
         def container(cont = nil)
           @container = cont if cont
           @container
+        end
+
+        # Configures the result aggregator
+        #
+        # Aggregators make is possible to build custom logic about
+        # how results should be "merged" together. For example,
+        # yuo could build and aggregator that prioritizes the
+        # values of some tasks over others.
+        #
+        # @example
+        #   class EnhanceUserProfile
+        #     extend Attr::Gather::Workflow
+        #
+        #     aggregator :deep_merge
+        #   end
+        #
+        # @param agg [#call] the aggregator to use
+        #
+        # @api public
+        def aggregator(agg = nil, opts = EMPTY_HASH)
+          if agg.nil? && !defined?(@aggregator)
+            @aggregator = Aggregators.default
+            return @aggregator
+          end
+
+          @aggregator = Aggregators.resolve(agg, opts) if agg
+          @aggregator
         end
       end
     end
