@@ -5,7 +5,7 @@ module Attr
     module Workflow
       # A wrapper containing information and results of a task execution
       #
-      # # @!attribute [r] ran_at
+      # # @!attribute [r] started_at
       #     @return [Time] time which the execution occured
       #
       # # @!attribute [r] task
@@ -16,10 +16,10 @@ module Attr
       #
       # @api public
       TaskExecutionResult = Struct.new(:task, :result) do
-        attr_reader :ran_at
+        attr_reader :started_at
 
         def initialize(*)
-          @ran_at = Time.now
+          @started_at = Time.now
           super
         end
 

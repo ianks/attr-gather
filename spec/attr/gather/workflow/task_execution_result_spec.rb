@@ -15,13 +15,13 @@ module Attr
           end
         end
 
-        describe '#ran_at' do
+        describe '#started_at' do
           it 'returns a time' do
             result = double(value!: { foo: :bar })
             task = instance_double(Task)
             task_execution_result = described_class.new(task, result)
 
-            expect(task_execution_result.ran_at).to respond_to(:year)
+            expect(task_execution_result.started_at).to respond_to(:year)
           end
         end
       end
