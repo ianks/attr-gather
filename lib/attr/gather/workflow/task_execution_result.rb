@@ -5,21 +5,24 @@ module Attr
     module Workflow
       # A wrapper containing information and results of a task execution
       #
-      # # @!attribute [r] started_at
-      #     @return [Time] time which the execution occured
+      # @!attribute [r] started_at
+      #   @return [Time] time which the execution occured
       #
-      # # @!attribute [r] task
-      #     @return [Attr::Gather::Workflow::Task] task that was run
+      # @!attribute [r] task
+      #   @return [Attr::Gather::Workflow::Task] task that was run
       #
-      # # @!attribute [r] result
-      #     @return [Concurrent::Promise] the result promise of the the task
+      # @!attribute [r] result
+      #   @return [Concurrent::Promise] the result promise of the the task
       #
       # @api public
       TaskExecutionResult = Struct.new(:task, :result) do
-        attr_reader :started_at
+        include Concerns::Identifiable
+
+        attr_reader :started_at, :uuid
 
         def initialize(*)
           @started_at = Time.now
+          @uuid = SecureRandom.uuid
           super
         end
 

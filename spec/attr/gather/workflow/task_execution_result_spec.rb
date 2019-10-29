@@ -25,6 +25,16 @@ module Attr
           end
         end
 
+        describe '#uuid' do
+          it 'returns a uuid' do
+            result = double(value!: { foo: :bar })
+            task = instance_double(Task)
+            task_execution_result = described_class.new(task, result)
+
+            expect(task_execution_result.uuid).to be_a_uuid
+          end
+        end
+
         describe '#state' do
           it 'uses the result promise state' do
             result = double(state: :pending)

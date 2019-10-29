@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'attr/gather/concerns/identifiable'
 require 'attr/gather/workflow/task'
 require 'attr/gather/workflow/task_graph'
 require 'attr/gather/workflow/dsl'
@@ -15,11 +16,13 @@ module Attr
       # @!parse include Callable
       # @!parse extend Graphable::ClassMethods
       # @!parse include Graphable::InstanceMethods
+      # @!parse include Concerns::Identifiable
 
       def self.included(klass)
         klass.extend(DSL)
         klass.include(Callable)
         klass.include(Graphable)
+        klass.include(Concerns::Identifiable)
       end
     end
   end
