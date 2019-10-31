@@ -5,7 +5,15 @@ require 'attr/gather'
 
 Dir['./spec/shared/**/*.rb'].each { |f| require(f) }
 
+module SpecHelpers
+  def be_a_uuid
+    match(/[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}/) # rubocop:disable Metrics/LineLength
+  end
+end
+
 RSpec.configure do |config|
+  config.include SpecHelpers
+
   config.example_status_persistence_file_path = '.rspec_status'
 
   config.expect_with :rspec do |expectations|

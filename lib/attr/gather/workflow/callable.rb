@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'dry/monads'
 require 'attr/gather/workflow/task_executor'
 require 'attr/gather/workflow/async_task_executor'
 
@@ -18,19 +17,21 @@ module Attr
         #
         # @example
         #   enhancer = MyEnhancingWorkflow.new
-        #   enhancer.call(user_id: 1) # => Success({user_id: 1, email: 't@t.co})
+        #   enhancer.call(user_id: 1).value! # => {user_id: 1, email: 't@t.co}
         #
         # @param input [Hash]
         #
-        # @return [Dry::Monads::Result]
+        # @return [Concurrent::Promise]
         #
         # @note For more information, check out {https://dry-rb.org/gems/dry-monads/1.0/result}
         #
         # @api public
         def call(input)
           final_results = []
+          tasks = []
 
           each_task_batch.reduce(input.dup) do |aggregated_input, batch|
+            tasks.concat(batch)
             executor_results = execute_batch(aggregated_input, batch)
             final_results << executor_results
             aggregator.call(aggregated_input, executor_results).value!

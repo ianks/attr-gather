@@ -25,7 +25,7 @@ module Attr
             memo.merge(res.result.value!)
           end
 
-          Success(result)
+          wrap_result(result)
         end
 
         private

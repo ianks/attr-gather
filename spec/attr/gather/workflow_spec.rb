@@ -87,6 +87,12 @@ module Attr
           expect(result.value!).to eql(id: :first)
         end
       end
+
+      describe '#uuid' do
+        it 'has a uuid attribute' do
+          expect(workflow_class.new).to have_attributes(uuid: be_a_uuid)
+        end
+      end
     end
   end
 end

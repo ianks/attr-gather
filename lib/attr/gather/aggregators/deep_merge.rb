@@ -25,7 +25,7 @@ module Attr
             deep_merge(memo, res.result.value!)
           end
 
-          Success(result)
+          wrap_result(result)
         end
 
         private
