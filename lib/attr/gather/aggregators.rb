@@ -1,27 +1,12 @@
 # frozen_string_literal: true
 
-require 'attr/gather/aggregators/registry'
+require 'attr/gather/concerns/registrable'
 
 module Attr
   module Gather
     # Namespace for aggregators
     module Aggregators
-      # Registered aggregators can be accessed by name
-      #
-      # @param name [Symbol] name of the aggregator
-      # @yield [options] block to initialize the aggregator
-      def self.register_aggregator(name, &blk)
-        Registry.register(name, &blk)
-      end
-
-      # Resolve a named aggregator
-      #
-      # @param name [Symbol]
-      #
-      # @return [#call]
-      def self.resolve(name, opts = Attr::Gather::EMPTY_HASH)
-        Registry.resolve(name, opts)
-      end
+      extend Registrable
 
       # The default aggregator if none is specified
       #
@@ -30,16 +15,16 @@ module Attr
         @default = resolve(:deep_merge)
       end
 
-      register_aggregator(:deep_merge) do |opts|
+      register(:deep_merge) do |*args|
         require 'attr/gather/aggregators/deep_merge'
 
-        DeepMerge.new(opts)
+        DeepMerge.new(*args)
       end
 
-      register_aggregator(:shallow_merge) do |opts|
+      register(:shallow_merge) do |*args|
         require 'attr/gather/aggregators/shallow_merge'
 
-        ShallowMerge.new(opts)
+        ShallowMerge.new(*args)
       end
     end
   end

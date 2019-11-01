@@ -14,15 +14,16 @@ module Attr
         # @param reverse [Boolean] deep merge results in reverse order
         #
         # @api private
-        def initialize(reverse: false)
+        def initialize(reverse: false, **)
           @reverse = reverse
+          super
         end
 
         def call(input, execution_results)
           execution_results = execution_results.reverse_each if reverse?
 
           result = execution_results.reduce(input.dup) do |memo, res|
-            deep_merge(memo, res.result.value!)
+            deep_merge(memo, unwrap_result(res))
           end
 
           wrap_result(result)
