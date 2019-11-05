@@ -57,7 +57,7 @@ module Attr
         #     container LegacySystem
         #   end
         #
-        # @param filt [Dry::Container] the Dry::Container to use
+        # @param cont [Dry::Container] the Dry::Container to use
         #
         # @note For more information, check out {https://dry-rb.org/gems/dry-container}
         #
