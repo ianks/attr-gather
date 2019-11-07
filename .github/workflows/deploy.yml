@@ -1,0 +1,16 @@
+---
+name: Deploy
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - v*
+jobs:
+  build-test-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: "cadwallion/publish-rubygems-action@master"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RUBYGEMS_API_KEY: ${{ secrets.RUBYGEMS_API_KEY }}
