@@ -6,6 +6,7 @@ source 'https://rubygems.org'
 gemspec
 
 group :development, :test do
+  gem 'dry-validation', '~> 1.3'
   gem 'pry'
   gem 'rubocop'
   gem 'yard'

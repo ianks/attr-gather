@@ -2,18 +2,20 @@
 
 module Attr
   module Gather
-    RSpec.describe Aggregators do
+    RSpec.describe Filters do
       describe '.default' do
-        it 'is the :deep_merge aggregator' do
-          expect(described_class.default).to be_a(Aggregators::DeepMerge)
+        it 'is the :noop filter' do
+          expect(described_class.default).to be_a(Filters::Noop)
         end
       end
 
       describe '.resolve' do
-        it 'resolves a named aggregator' do
-          result = described_class.resolve(:deep_merge)
+        include_context 'user workflow'
 
-          expect(result).to be_a(Aggregators::DeepMerge)
+        it 'resolves a named aggregator' do
+          res = described_class.resolve(:contract, user_contract.new)
+
+          expect(res).to be_a(Filters::Contract)
         end
 
         it 'raises a meaningful error when no aggregator is found' do

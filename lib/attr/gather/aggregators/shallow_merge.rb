@@ -14,15 +14,16 @@ module Attr
         # @param reverse [Boolean] merge results in reverse order
         #
         # @api private
-        def initialize(reverse: false)
+        def initialize(reverse: false, **)
           @reverse = reverse
+          super
         end
 
         def call(input, execution_results)
           items = reverse? ? execution_results.reverse_each : execution_results
 
           result = items.reduce(input.dup) do |memo, res|
-            memo.merge(res.result.value!)
+            memo.merge(unwrap_result(res))
           end
 
           wrap_result(result)

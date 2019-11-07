@@ -13,3 +13,4 @@ end
 
 require 'attr/gather/workflow'
 require 'attr/gather/aggregators'
+require 'attr/gather/filters'

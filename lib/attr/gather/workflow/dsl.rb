@@ -90,8 +90,51 @@ module Attr
             return @aggregator
           end
 
-          @aggregator = Aggregators.resolve(agg, opts) if agg
+          @aggregator = Aggregators.resolve(agg, filter: filter, **opts) if agg
           @aggregator
+        end
+
+        # Defines a filter for filtering out invalid values
+        #
+        # When aggregating data from many sources, it is hard to reason about
+        # all the ways invalid data will be returned. For example, if you are
+        # pulling data from a spreadsheet, there will often be typos, etc.
+        #
+        # Defining a filter allows you to declaratively state what is valid.
+        # attr-gather will use this definition to automatically filter out
+        # invalid values, so they never make it into your system.
+        #
+        # Filtering happens during each step of the workflow, which means that
+        # every Task will receive validated input that you can rely on.
+        #
+        # @example
+        #   class UserContract < Dry::Validation::Contract do
+        #     params do
+        #       optional(:id).filled(:integer)
+        #       optional(:email).filled(:str?, format?: /@/)
+        #     end
+        #   end
+        #
+        #   class EnhanceUserProfile
+        #     extend Attr::Gather::Workflow
+        #
+        #     # Any of the key/value pairs that had validation errors will be
+        #     # filtered from the output.
+        #     filter :contract, UserContract.new
+        #   end
+        #
+        # @param filt [Symbol] the name filter to use
+        # @param args [Array<Object>] arguments for initializing the filter
+        #
+        # @api public
+        def filter(filt = nil, *args)
+          if filt.nil? && !defined?(@filter)
+            @filter = Filters.default
+            return @filter
+          end
+
+          @filter = Filters.resolve(filt, *args) if filt
+          @filter
         end
       end
     end

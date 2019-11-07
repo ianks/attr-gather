@@ -93,6 +93,30 @@ module Attr
           expect(workflow_class.new).to have_attributes(uuid: be_a_uuid)
         end
       end
+
+      describe '.filter' do
+        include_context 'user workflow'
+
+        let(:user_container) do
+          container = Dry::Container.new
+
+          container.register(:good) do |_input|
+            { email: 'test@test.com' }
+          end
+
+          container.register(:bad) do |_input|
+            { email: 'notanemail' }
+          end
+        end
+
+        it 'filters out bad values' do
+          user_workflow_class.aggregator(:deep_merge)
+          workflow = user_workflow_class.new
+          result = workflow.call({})
+
+          expect(result.value!).to eql(email: 'test@test.com')
+        end
+      end
     end
   end
 end

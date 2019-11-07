@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'dry-container'
+require 'dry-validation'
 require 'attr-gather'
 require 'http'
 
@@ -8,41 +9,55 @@ require 'http'
 class MyContainer
   extend Dry::Container::Mixin
 
-  register 'fetch_post' do |id:, **_attrs|
+  register :fetch_post do |id:, **_attrs|
     res = HTTP.get("https://jsonplaceholder.typicode.com/posts/#{id}")
     post = JSON.parse(res.to_s, symbolize_names: true)
 
     { title: post[:title], user_id: post[:userId], body: post[:body] }
   end
 
-  register 'fetch_user' do |user_id:, **_attrs|
+  register :fetch_user_from_buggy_api do |*|
+    { user: { email: 'invalidemail' } }
+  end
+
+  register :fetch_user do |user_id:, **_attrs|
     res = HTTP.get("https://jsonplaceholder.typicode.com/users/#{user_id}")
     user = JSON.parse(res.to_s, symbolize_names: true)
 
     { user: { name: user[:name], email: user[:email] } }
   end
 
-  register 'email_info' do |user:, **_attrs|
+  register :email_info do |user:, **_attrs|
     res = HTTP.get("https://api.trumail.io/v2/lookups/json?email=#{user[:email]}")
     info = JSON.parse(res.to_s, symbolize_names: true)
 
     { user: { email_info: { deliverable: info[:deliverable], free: info[:free] } } }
   end
 
-  register 'gravatar_image' do |user:, **_attrs|
-    # include MD5 gem, should be part of standard ruby install
+  register :gravatar_image do |user:, **_attrs|
     require 'digest/md5'
-
-    # get the email from URL-parameters or what have you and make lowercase
     email_address = user[:email].downcase
-
-    # create the md5 hash
     hash = Digest::MD5.hexdigest(email_address)
-
-    # compile URL which can be used in <img src="RIGHT_HERE"...
     image_url = "https://www.gravatar.com/avatar/#{hash}"
 
     { user: { gravatar: image_url } }
+  end
+end
+
+# define a validation contract
+class UserContract < Dry::Validation::Contract
+  params do
+    required(:user_id).filled(:integer)
+
+    optional(:user).hash do
+      optional(:name).filled(:string)
+      optional(:email).filled(:string)
+      optional(:gravatar).filled(:string)
+      optional(:email_info).hash do
+        optional(:deliverable).filled(:bool?)
+        optional(:free).filled(:bool?)
+      end
+    end
   end
 end
 
@@ -50,12 +65,21 @@ end
 class EnhanceUserProfile
   include Attr::Gather::Workflow
 
+  # contains all the task implementations
   container MyContainer
 
+  # perform a deep merge of the task outputs for the result
   aggregator :deep_merge
+
+  # filter out invalid values using a Dry::Validation::Contract
+  filter :contract, UserContract.new
 
   task :fetch_post do |t|
     t.depends_on = []
+  end
+
+  task :fetch_user_from_buggy_api do |t|
+    t.depends_on = [:fetch_post]
   end
 
   task :fetch_user do |t|
@@ -79,6 +103,8 @@ enhancer = EnhanceUserProfile.new
 puts
 puts 'Runing workflow...'
 puts
+puts 'Result'
+puts '======'
 pp enhancer.call(id: 12).value!
 
 # fun fact: you can preview as svg!

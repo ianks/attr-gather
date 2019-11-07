@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'dry-validation'
+
 RSpec.shared_context 'test container' do
   let(:test_container) do
     container = Dry::Container.new
