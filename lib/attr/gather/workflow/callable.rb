@@ -68,7 +68,18 @@ module Attr
 
         # @api private
         def aggregator
-          self.class.aggregator
+          return @aggregator if @aggregator
+
+          @aggregator = self.class.instance_variable_get(:@aggregator)
+          @aggregator ||= Aggregators.default
+          @aggregator.filter ||= filter
+
+          @aggregator
+        end
+
+        # @api private
+        def filter
+          self.class.filter
         end
       end
     end
