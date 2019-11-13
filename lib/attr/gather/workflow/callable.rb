@@ -71,7 +71,6 @@ module Attr
           return @aggregator if @aggregator
 
           @aggregator = self.class.aggregator
-          @aggregator ||= Aggregators.default
           @aggregator.filter ||= filter
 
           @aggregator

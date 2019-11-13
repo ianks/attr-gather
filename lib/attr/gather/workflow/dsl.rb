@@ -87,7 +87,7 @@ module Attr
         def aggregator(agg = nil, opts = EMPTY_HASH)
           @aggregator = Aggregators.resolve(agg, filter: filter, **opts) if agg
 
-          @aggregator
+          @aggregator || Aggregators.default
         end
 
         # Defines a filter for filtering out invalid values
