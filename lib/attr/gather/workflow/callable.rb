@@ -70,7 +70,7 @@ module Attr
         def aggregator
           return @aggregator if @aggregator
 
-          @aggregator = self.class.instance_variable_get(:@aggregator)
+          @aggregator = self.class.aggregator
           @aggregator ||= Aggregators.default
           @aggregator.filter ||= filter
 
