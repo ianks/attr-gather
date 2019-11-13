@@ -85,9 +85,13 @@ module Attr
         #
         # @api public
         def aggregator(agg = nil, opts = EMPTY_HASH)
-          @aggregator = Aggregators.resolve(agg, filter: filter, **opts) if agg
+          if agg.nil? && !defined?(@aggregator)
+            @aggregator = Aggregators.default
+            return @aggregator
+          end
 
-          @aggregator || Aggregators.default
+          @aggregator = Aggregators.resolve(agg, filter: filter, **opts) if agg
+          @aggregator
         end
 
         # Defines a filter for filtering out invalid values
