@@ -68,7 +68,17 @@ module Attr
 
         # @api private
         def aggregator
-          self.class.aggregator
+          return @aggregator if defined?(@aggregator) && !@aggregator.nil?
+
+          @aggregator = self.class.aggregator
+          @aggregator.filter ||= filter
+
+          @aggregator
+        end
+
+        # @api private
+        def filter
+          self.class.filter
         end
       end
     end

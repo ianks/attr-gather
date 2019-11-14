@@ -110,7 +110,6 @@ module Attr
         end
 
         it 'filters out bad values' do
-          user_workflow_class.aggregator(:deep_merge)
           workflow = user_workflow_class.new
           result = workflow.call({})
 

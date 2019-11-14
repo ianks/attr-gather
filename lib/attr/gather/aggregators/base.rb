@@ -9,7 +9,7 @@ module Attr
       # @!attribute [r] filter
       #   @return [Attr::Gather::Filters::Base] filter for the output data
       class Base
-        attr_reader :filter
+        attr_accessor :filter
 
         def initialize(**opts)
           @filter = opts.delete(:filter)
