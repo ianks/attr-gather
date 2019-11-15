@@ -28,7 +28,7 @@ class MyContainer
   end
 
   register :email_info do |user:, **_attrs|
-    res = HTTP.get("https://api.trumail.io/v2/lookups/json?email=#{user[:email]}")
+    res = HTTP.timeout(3).get("https://api.trumail.io/v2/lookups/json?email=#{user[:email]}")
     info = JSON.parse(res.to_s, symbolize_names: true)
 
     { user: { email_info: { deliverable: info[:deliverable], free: info[:free] } } }
@@ -44,23 +44,6 @@ class MyContainer
   end
 end
 
-# define a validation contract
-class UserContract < Dry::Validation::Contract
-  params do
-    required(:user_id).filled(:integer)
-
-    optional(:user).hash do
-      optional(:name).filled(:string)
-      optional(:email).filled(:string)
-      optional(:gravatar).filled(:string)
-      optional(:email_info).hash do
-        optional(:deliverable).filled(:bool?)
-        optional(:free).filled(:bool?)
-      end
-    end
-  end
-end
-
 # define a workflow
 class EnhanceUserProfile
   include Attr::Gather::Workflow
@@ -72,7 +55,21 @@ class EnhanceUserProfile
   aggregator :deep_merge
 
   # filter out invalid values using a Dry::Validation::Contract
-  filter :contract, UserContract.new
+  filter_with_contract do
+    params do
+      required(:user_id).filled(:integer)
+
+      optional(:user).hash do
+        optional(:name).filled(:string)
+        optional(:email).filled(:string)
+        optional(:gravatar).filled(:string)
+        optional(:email_info).hash do
+          optional(:deliverable).filled(:bool?)
+          optional(:free).filled(:bool?)
+        end
+      end
+    end
+  end
 
   task :fetch_post do |t|
     t.depends_on = []

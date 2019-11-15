@@ -116,6 +116,50 @@ module Attr
           expect(result.value!).to eql(email: 'test@test.com')
         end
       end
+
+      describe '.filter_with_contract' do
+        include_context 'user workflow'
+
+        let(:user_container) do
+          container = Dry::Container.new
+
+          container.register(:good) do |_input|
+            { email: 'test@test.com' }
+          end
+
+          container.register(:bad) do |_input|
+            { email: 'notanemail' }
+          end
+        end
+
+        it 'creates a new contract filter with a block' do
+          user_workflow_class.filter_with_contract do
+            params do
+              optional(:foo).filled(:str?)
+            end
+          end
+
+          workflow = user_workflow_class.new
+          result = workflow.call(foo: 'bar')
+
+          expect(result.value!).to eql(foo: 'bar')
+        end
+
+        it 'allows for contract as an arg' do
+          contract_class = Class.new(Dry::Validation::Contract) do
+            params do
+              optional(:foo).filled(:str?)
+            end
+          end
+
+          user_workflow_class.filter_with_contract(contract_class.new)
+
+          workflow = user_workflow_class.new
+          result = workflow.call(foo: 'bar')
+
+          expect(result.value!).to eql(foo: 'bar')
+        end
+      end
     end
   end
 end

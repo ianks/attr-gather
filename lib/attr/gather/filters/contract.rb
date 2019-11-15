@@ -51,7 +51,8 @@ module Attr
         def validate_dry_contract!(con)
           return if con.respond_to?(:call) && con.class.respond_to?(:schema)
 
-          raise IncompatibleContractError, 'contract is not compatible'
+          raise IncompatibleContractError,
+                "contract is not compatible (#{con.inspect})"
         end
       end
     end

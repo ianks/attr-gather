@@ -7,6 +7,9 @@ module Attr
       #
       # @api public
       module DSL
+        # @api private
+        Undefined = Object.new.freeze
+
         # Defines a task with name and options
         #
         # @param task_name [Symbol] the name of the task
@@ -127,14 +130,53 @@ module Attr
         # @param args [Array<Object>] arguments for initializing the filter
         #
         # @api public
-        def filter(filt = nil, *args)
-          if filt.nil? && !defined?(@filter)
+        def filter(filt = Undefined, *args)
+          if filt == Undefined && !defined?(@filter)
             @filter = Filters.default
-            return @filter
+          elsif filt != Undefined
+            @filter = Filters.resolve(filt, *args)
           end
 
-          @filter = Filters.resolve(filt, *args) if filt
           @filter
+        end
+
+        # Defines a filter for filtering invalid values with an inline contract
+        #
+        # This serves as a convenience method for defining a contract filter.
+        #
+        # @example
+        #
+        #   class EnhanceUserProfile
+        #     extend Attr::Gather::Workflow
+        #
+        #     # Any of the key/value pairs that had validation errors will be
+        #     # filtered from the output.
+        #     filter_with_contract do
+        #        params do
+        #          required(:name).filled(:string)
+        #          required(:age).value(:integer)
+        #        end
+        #
+        #        rule(:age) do
+        #          key.failure('must be greater than 18') if value < 18
+        #        end
+        #     end
+        #   end
+        #
+        # @return [Dry::Validation::Contract,NilClass]
+        # @see https://dry-rb.org/gems/dry-validation
+        #
+        # @api public
+        def filter_with_contract(arg = nil, &blk)
+          contract = block_given? ? build_inline_contract_filter(&blk) : arg
+          @filter = Filters.resolve(:contract, contract)
+        end
+
+        private
+
+        def build_inline_contract_filter(&blk)
+          contract_klass = Class.new(Dry::Validation::Contract, &blk)
+          contract_klass.new
         end
       end
     end
