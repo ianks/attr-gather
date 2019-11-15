@@ -15,15 +15,16 @@ module Attr
       #   @return [Concurrent::Promise] the result promise of the the task
       #
       # @api public
-      TaskExecutionResult = Struct.new(:task, :result) do
+      class TaskExecutionResult
         include Concerns::Identifiable
 
-        attr_reader :started_at, :uuid
+        attr_reader :task, :result, :started_at, :uuid
 
-        def initialize(*)
+        def initialize(task, result)
           @started_at = Time.now
           @uuid = SecureRandom.uuid
-          super
+          @task = task
+          @result = result
         end
 
         # @!attribute [r] state
