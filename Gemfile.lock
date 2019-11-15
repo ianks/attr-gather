@@ -104,6 +104,8 @@ GEM
       rainbow (>= 2.2.2, < 4.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 1.4.0, < 1.7)
+    rubocop-performance (1.5.1)
+      rubocop (>= 0.71.0)
     ruby-progressbar (1.10.1)
     solargraph (0.37.2)
       backport (~> 1.1)
@@ -137,6 +139,7 @@ DEPENDENCIES
   rake (~> 10.0)
   rspec (~> 3.0)
   rubocop
+  rubocop-performance
   solargraph
   yard
 

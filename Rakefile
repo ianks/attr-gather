@@ -10,3 +10,12 @@ RuboCop::RakeTask.new(:lint)
 YARD::Rake::YardocTask.new(:doc)
 
 task default: %i[spec lint]
+
+namespace :examples do
+  desc 'Run all examples'
+  task :run do
+    Dir['examples/*.rb'].each do |filename|
+      system "ruby #{filename}"
+    end
+  end
+end

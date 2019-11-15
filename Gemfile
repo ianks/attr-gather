@@ -9,6 +9,7 @@ group :development, :test do
   gem 'dry-validation', '~> 1.3'
   gem 'pry'
   gem 'rubocop'
+  gem 'rubocop-performance'
   gem 'yard'
 end
 

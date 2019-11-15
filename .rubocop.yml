@@ -1,9 +1,16 @@
+require:
+  - rubocop-performance
+
 AllCops:
   UseCache: true
   CacheRootDirectory: './tmp/cache'
   TargetRubyVersion: 2.5
 
 Metrics/BlockLength:
+  Exclude:
+    - spec/**/*.rb
+
+Metrics/ModuleLength:
   Exclude:
     - spec/**/*.rb
 
@@ -21,3 +28,11 @@ Style/Documentation:
   Exclude:
     - ./examples/**/*
     - ./spec/**/*
+
+Metrics/CyclomaticComplexity:
+  Exclude:
+    - ./lib/attr/gather/workflow/dsl.rb
+
+Metrics/PerceivedComplexity:
+  Exclude:
+    - ./lib/attr/gather/workflow/dsl.rb
