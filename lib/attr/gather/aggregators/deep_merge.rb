@@ -23,7 +23,7 @@ module Attr
 
         def call(input, execution_results)
           execution_results = execution_results.reverse_each if reverse?
-          initial = merge_input? ? input.dup : {}
+          initial = unwrap_initial_input(input)
 
           result = execution_results.reduce(initial) do |memo, res|
             deep_merge(memo, unwrap_result(res))
@@ -33,6 +33,10 @@ module Attr
         end
 
         private
+
+        def unwrap_initial_input(input)
+          merge_input? ? filter.call(input.dup).value : {}
+        end
 
         def reverse?
           @reverse

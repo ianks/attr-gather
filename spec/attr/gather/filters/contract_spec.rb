@@ -11,7 +11,7 @@ module Attr
         describe '#call' do
           let(:contract) do
             Class.new(Dry::Validation::Contract) do
-              params do
+              schema do
                 optional(:email).filled(:str?, format?: /@/)
                 optional(:country).hash do
                   required(:name).filled(:string)
@@ -33,12 +33,23 @@ module Attr
             expect(res).to have_attributes(value: { country: { name: 'test' } })
           end
 
+          it 'removes keys not specified in the contract' do
+            res = contract_filter.call(
+              country: { name: 'test', code: 't' },
+              foo: 'bar'
+            )
+
+            expect(res).to have_attributes(
+              value: { country: { name: 'test', code: 't' } }, filterings: []
+            )
+          end
+
           it 'returns a list of filter attributes' do
             res = contract_filter.call(country: { name: 'test', code: nil })
 
             filtered_code = have_attributes(
               path: %i[country code],
-              reason: 'must be filled',
+              reason: 'must be a string',
               input: nil
             )
 
