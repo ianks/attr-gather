@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'attr/gather/filters/noop'
+
 module Attr
   module Gather
     module Aggregators
@@ -11,8 +13,10 @@ module Attr
       class Base
         attr_accessor :filter
 
+        NOOP_FILTER ||= Filters::Noop.new
+
         def initialize(**opts)
-          @filter = opts.delete(:filter)
+          @filter = opts.delete(:filter) || NOOP_FILTER
         end
 
         def call(_original_input, _results_array)

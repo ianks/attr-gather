@@ -88,13 +88,13 @@ module Attr
         #
         # @api public
         def aggregator(agg = nil, opts = EMPTY_HASH)
-          if agg.nil? && !defined?(@aggregator)
-            @aggregator = Aggregators.default
-            return @aggregator
-          end
-
-          @aggregator = Aggregators.resolve(agg, filter: filter, **opts) if agg
-          @aggregator
+          @aggregator = if agg.nil? && !defined?(@aggregator)
+                          Aggregators.default
+                        elsif agg
+                          Aggregators.resolve(agg, filter: filter, **opts)
+                        else
+                          @aggregator
+                        end
         end
 
         # Defines a filter for filtering out invalid values
@@ -130,12 +130,16 @@ module Attr
         # @param args [Array<Object>] arguments for initializing the filter
         #
         # @api public
-        def filter(filt = Undefined, *args, **opts)
-          if filt == Undefined && !defined?(@filter)
-            @filter = Filters.default
-          elsif filt != Undefined
-            @filter = Filters.resolve(filt, *args, **opts)
-          end
+        def filter(filt = nil, *args, **opts)
+          @filter = if filt.nil? && !defined?(@filter)
+                      Filters.default
+                    elsif filt
+                      Filters.resolve(filt, *args, **opts)
+                    else
+                      @filter
+                    end
+
+          aggregator.filter = @filter
 
           @filter
         end
@@ -169,7 +173,7 @@ module Attr
         # @api public
         def filter_with_contract(arg = nil, &blk)
           contract = block_given? ? build_inline_contract_filter(&blk) : arg
-          @filter = Filters.resolve(:contract, contract)
+          filter(:contract, contract)
         end
 
         private
