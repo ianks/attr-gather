@@ -29,13 +29,13 @@ module Attr
       # @param name [Symbol]
       #
       # @return [#call]
-      def resolve(name, *args)
+      def resolve(name, *args, **opts)
         block = @__storage__.fetch(name) do
           raise NotFoundError,
                 "no item with name #{name} registered"
         end
 
-        block.call(*args)
+        block.call(*args, **opts)
       end
 
       # @api private

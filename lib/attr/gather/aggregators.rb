@@ -15,16 +15,16 @@ module Attr
         @default = resolve(:deep_merge)
       end
 
-      register(:deep_merge) do |*args|
+      register(:deep_merge) do |*args, **opts|
         require 'attr/gather/aggregators/deep_merge'
 
-        DeepMerge.new(*args)
+        DeepMerge.new(*args, **opts)
       end
 
-      register(:shallow_merge) do |*args|
+      register(:shallow_merge) do |*args, **opts|
         require 'attr/gather/aggregators/shallow_merge'
 
-        ShallowMerge.new(*args)
+        ShallowMerge.new(*args, **opts)
       end
     end
   end

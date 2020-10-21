@@ -56,6 +56,23 @@ module Attr
           end
         end
 
+        context 'when used with merge_input: false' do
+          subject(:aggregator) { described_class.new(merge_input: false) }
+
+          describe '#call' do
+            it 'does not inclue the input in the merged result' do
+              res = aggregator.call(
+                { user: { name: 'ian' } },
+                [
+                  val(user: { id: 1 })
+                ]
+              ).value!
+
+              expect(res).to eql(user: { id: 1 })
+            end
+          end
+        end
+
         def val(hash)
           task_exeution_result(hash)
         end

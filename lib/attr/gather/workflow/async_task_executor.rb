@@ -7,8 +7,8 @@ module Attr
     module Workflow
       # @api private
       class AsyncTaskExecutor < TaskExecutor
-        def initialize(*)
-          super
+        def initialize(batch, container:)
+          super(batch, container: container)
           @executor = :io
         end
       end
