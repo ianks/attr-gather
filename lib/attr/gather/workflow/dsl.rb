@@ -130,11 +130,11 @@ module Attr
         # @param args [Array<Object>] arguments for initializing the filter
         #
         # @api public
-        def filter(filt = Undefined, *args)
+        def filter(filt = Undefined, *args, **opts)
           if filt == Undefined && !defined?(@filter)
             @filter = Filters.default
           elsif filt != Undefined
-            @filter = Filters.resolve(filt, *args)
+            @filter = Filters.resolve(filt, *args, **opts)
           end
 
           @filter
