@@ -25,16 +25,10 @@ module Attr
 
         private
 
-        def wrap_result(result)
-          Concurrent::Promise.fulfill(result)
-        end
-
         def unwrap_result(res)
-          unvalidated = res.result.value!
+          return res if filter.nil?
 
-          return unvalidated if filter.nil?
-
-          filter.call(unvalidated).value
+          filter.call(res).value
         end
       end
     end

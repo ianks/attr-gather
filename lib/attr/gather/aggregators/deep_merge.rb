@@ -28,8 +28,6 @@ module Attr
           result = execution_results.reduce(initial) do |memo, res|
             deep_merge(memo, unwrap_result(res))
           end
-
-          wrap_result(result)
         end
 
         private

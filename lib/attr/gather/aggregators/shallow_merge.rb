@@ -25,11 +25,9 @@ module Attr
           execution_results = execution_results.reverse_each if reverse?
           initial = unwrap_initial_input(input)
 
-          result = execution_results.reduce(initial) do |memo, res|
+          execution_results.reduce(initial) do |memo, res|
             memo.merge(unwrap_result(res))
           end
-
-          wrap_result(result)
         end
 
         private

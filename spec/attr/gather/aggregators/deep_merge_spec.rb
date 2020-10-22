@@ -19,7 +19,7 @@ module Attr
                   val(user: { id: 1 }),
                   val(user: { email: 't@t.com' })
                 ]
-              ).value!
+              )
 
               expect(res).to eql(user: { name: 'ian', id: 1, email: 't@t.com' })
             end
@@ -31,7 +31,7 @@ module Attr
                   val(user: { id: 1 }),
                   val(user: { id: 2 })
                 ]
-              ).value!
+              )
 
               expect(res).to eql(user: { name: 'ian', id: 2 })
             end
@@ -49,7 +49,7 @@ module Attr
                   val(user: { id: 1 }),
                   val(user: { id: 2 })
                 ]
-              ).value!
+              )
 
               expect(res).to eql(user: { name: 'ian', id: 1 })
             end
@@ -66,7 +66,7 @@ module Attr
                 [
                   val(user: { id: 1 })
                 ]
-              ).value!
+              )
 
               expect(res).to eql(user: { id: 1 })
             end
@@ -74,7 +74,7 @@ module Attr
         end
 
         def val(hash)
-          task_exeution_result(hash)
+          hash
         end
       end
     end
