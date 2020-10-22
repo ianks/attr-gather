@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    attr-gather (1.1.3)
+    attr-gather (1.2.0)
       dry-container (~> 0.7)
 
 GEM
