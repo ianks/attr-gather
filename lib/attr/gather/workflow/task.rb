@@ -14,7 +14,7 @@ module Attr
         # Initialize a new DeepMerge aggregator
         #
         # @param name [String] name of the task
-        # @param depends_on [Array<Task>] tasks which are needed to before running
+        # @param depends_on [Array<Task>] tasks needed before running this task
         #
         # @api private
         def initialize(name:, depends_on: [])
