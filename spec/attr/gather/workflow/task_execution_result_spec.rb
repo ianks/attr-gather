@@ -47,6 +47,30 @@ module Attr
           end
         end
 
+        describe '#then' do
+          it 'delegates to the result' do
+            result = Concurrent::Promise.execute { :foo }
+            task = instance_double(Task)
+            orig_result = described_class.new(task, result)
+            new_result = orig_result.then { :bar }
+
+            expect(orig_result.value!).to eql(:foo)
+            expect(new_result.value!).to eql(:bar)
+          end
+        end
+
+        describe '#catch' do
+          it 'delegates to the result' do
+            result = Concurrent::Promise.execute { raise 'oh no!' }
+            task = instance_double(Task)
+            orig_result = described_class.new(task, result)
+            new_result = orig_result.catch(&:message)
+
+            expect { orig_result.value! }.to raise_error(RuntimeError, 'oh no!')
+            expect(new_result.value!).to eql('oh no!')
+          end
+        end
+
         describe '#as_json' do
           it 'is serializable as a hash' do
             task = Task.new(name: :foobar, depends_on: [])

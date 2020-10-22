@@ -20,11 +20,11 @@ module Attr
 
         attr_reader :task, :result, :started_at, :uuid
 
-        def initialize(task, result)
-          @started_at = Time.now
-          @uuid = SecureRandom.uuid
+        def initialize(task, result, started_at: Time.now, uuid: SecureRandom.uuid) # rubocop:disable Metrics/LineLength
           @task = task
           @result = result
+          @started_at = started_at
+          @uuid = uuid
         end
 
         # @!attribute [r] state
@@ -41,6 +41,25 @@ module Attr
           result.value!
         end
 
+        # Chain a new block result to be executed after resolution
+        #
+        # @return [TaskExecutionResult] the new task execution result
+        # @yield The block operation to be performed asynchronously.
+        def then(*args, &block)
+          new_result = result.then(*args, &block)
+          self.class.new(task, new_result, started_at: @started_at, uuid: @uuid)
+        end
+
+        # Catch an async exception when a failure occurs
+        #
+        # @return [TaskExecutionResult] the new task execution result
+        # @yield The block operation to be performed asynchronously.
+        def catch(*args, &block)
+          new_result = result.catch(*args, &block)
+          self.class.new(task, new_result, started_at: @started_at, uuid: @uuid)
+        end
+
+        # Executes a block after the result is fulfilled
         # Represents the TaskExecutionResult as a hash
         #
         # @return [Hash]
