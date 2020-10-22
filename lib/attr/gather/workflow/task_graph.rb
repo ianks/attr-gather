@@ -20,7 +20,9 @@ module Attr
           tasks.each { |t| self << t }
         end
 
-        def <<(task)
+        def <<(hash)
+          name, depends_on = hash.values_at :name, :depends_on
+          task = build_task(name, depends_on)
           validate_for_insert!(task)
 
           registered_tasks.each do |t|
@@ -68,6 +70,16 @@ module Attr
 
         private
 
+        def build_task(name, depends_on)
+          deps = depends_on.map do |dep_name|
+            registered_tasks.find do |task|
+              task.name == dep_name
+            end
+          end
+
+          Task.new(name: name, depends_on: deps)
+        end
+
         def tsort_each_child(node, &blk)
           to_h[node].each(&blk)
         end
@@ -99,7 +111,7 @@ module Attr
         end
 
         def depended_on_tasks_exist?(task)
-          task.depends_on.all? { |t| registered_tasks.map(&:name).include?(t) }
+          task.depends_on.all? { |t| registered_tasks.include?(t) }
         end
       end
     end

@@ -36,9 +36,9 @@ module Attr
         #
         # @api public
         def task(task_name, opts = EMPTY_HASH)
-          task = Task.new(name: task_name, **opts)
-          yield task
-          tasks << task
+          conf = OpenStruct.new
+          yield conf
+          tasks << Hash[name: task_name, **opts, **conf.to_h]
           self
         end
 

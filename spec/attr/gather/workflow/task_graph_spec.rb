@@ -12,69 +12,71 @@ module Attr
             graph = described_class.new
 
             expect do
-              graph << Task.new(name: :one, depends_on: [:does_not_exist])
+              graph << Hash[name: :foo, depends_on: [:does_not_exist]]
             end.to raise_error(TaskGraph::InvalidTaskDepedencyError)
           end
         end
 
         describe '#to_a' do
           it 'sorts tasks topologically' do
-            t_one = Task.new(name: :one, depends_on: [])
-            t_two = Task.new(name: :two, depends_on: [:one])
-            t_three = Task.new(name: :three, depends_on: [:two])
-            t_four = Task.new(name: :four, depends_on: [:three])
+            t_one = Hash[name: :one, depends_on: []]
+            t_two = Hash[name: :two, depends_on: [:one]]
+            t_three = Hash[name: :three, depends_on: [:two]]
+            t_four = Hash[name: :four, depends_on: [:three]]
 
             graph = described_class.new(tasks: [t_one, t_two, t_three, t_four])
             serialized = graph.to_a
 
-            expect(serialized[0]).to eql(t_one)
-            expect(serialized[1]).to eql(t_two)
-            expect(serialized[2]).to eql(t_three)
-            expect(serialized[3]).to eql(t_four)
+            expect(serialized[0]).to match_task(t_one)
+            expect(serialized[1]).to match_task(t_two)
+            expect(serialized[2]).to match_task(t_three)
+            expect(serialized[3]).to match_task(t_four)
           end
         end
 
         describe '#each_strongly_connected_component' do
           it 'batches tasks topologically' do
-            t_one = Task.new(name: :one, depends_on: [])
-            t_two = Task.new(name: :two, depends_on: [:one])
-            t_three = Task.new(name: :three, depends_on: [:two])
-            t_four = Task.new(name: :four, depends_on: [:two])
+            t_one = Hash[name: :one, depends_on: []]
+            t_two = Hash[name: :two, depends_on: [:one]]
+            t_three = Hash[name: :three, depends_on: [:two]]
+            t_four = Hash[name: :four, depends_on: [:two]]
 
             graph = described_class.new(tasks: [t_one, t_two, t_three, t_four])
             serialized = graph.to_a
 
-            expect(serialized[0]).to eql(t_one)
-            expect(serialized[1]).to eql(t_two)
-            expect(serialized[2]).to eql(t_three)
-            expect(serialized[3]).to eql(t_four)
+            expect(serialized[0]).to match_task(t_one)
+            expect(serialized[1]).to match_task(t_two)
+            expect(serialized[2]).to match_task(t_three)
+            expect(serialized[3]).to match_task(t_four)
           end
         end
 
         describe '#to_h' do
           it 'builds a hash of the deps' do
-            t_one = Task.new(name: :one, depends_on: [])
-            t_two = Task.new(name: :two, depends_on: [:one])
-            t_three = Task.new(name: :three, depends_on: [:two])
-            t_four = Task.new(name: :four, depends_on: [:two])
+            t_one = Hash[name: :one, depends_on: []]
+            t_two = Hash[name: :two, depends_on: [:one]]
+            t_three = Hash[name: :three, depends_on: [:two]]
+            t_four = Hash[name: :four, depends_on: [:two]]
 
             graph = described_class.new(tasks: [t_one, t_two, t_three, t_four])
 
+            find = ->(hash) { graph.to_a.find { |t| t.name == hash[:name] } }
+
             expect(graph.to_h).to eql(
-              t_one => [],
-              t_two => [t_one],
-              t_three => [t_two],
-              t_four => [t_two]
+              find.call(t_one) => [],
+              find.call(t_two) => [find.call(t_one)],
+              find.call(t_three) => [find.call(t_two)],
+              find.call(t_four) => [find.call(t_two)]
             )
           end
         end
 
         describe '#to_dot' do
           it 'builds a dot string' do
-            t_one = Task.new(name: :one, depends_on: [])
-            t_two = Task.new(name: :two, depends_on: [:one])
-            t_three = Task.new(name: :three, depends_on: [:one])
-            t_four = Task.new(name: :four, depends_on: %i[two three])
+            t_one = Hash[name: :one, depends_on: []]
+            t_two = Hash[name: :two, depends_on: [:one]]
+            t_three = Hash[name: :three, depends_on: [:one]]
+            t_four = Hash[name: :four, depends_on: %i[two three]]
 
             graph = described_class.new(tasks: [t_one, t_two, t_three, t_four])
 
@@ -91,33 +93,42 @@ module Attr
 
         describe '#each_batch' do
           it 'yields batches of concurrently executable tasks' do
-            t_one = Task.new(name: :one, depends_on: [])
-            t_two = Task.new(name: :two, depends_on: [:one])
-            t_three = Task.new(name: :three, depends_on: [:two])
-            t_four = Task.new(name: :four, depends_on: [:two])
+            t_one = Hash[name: :one, depends_on: []]
+            t_two = Hash[name: :two, depends_on: [:one]]
+            t_three = Hash[name: :three, depends_on: [:two]]
+            t_four = Hash[name: :four, depends_on: [:two]]
 
             graph = described_class.new(tasks: [t_one, t_two, t_three, t_four])
             batches = graph.each_batch.to_a
 
-            expect(batches).to eql(
-              [
-                [t_one],
-                [t_two],
-                [t_three, t_four]
-              ]
+            expect(batches).to contain_exactly(
+              contain_exactly(match_task(t_one)),
+              contain_exactly(match_task(t_two)),
+              contain_exactly(match_task(t_three), match_task(t_four))
             )
           end
         end
 
         describe '#runnable_tasks' do
           it 'yields batches of concurrently executable tasks' do
-            t_one = Task.new(name: :one, depends_on: [])
-            t_two = Task.new(name: :two, depends_on: [])
-            t_three = Task.new(name: :three, depends_on: [:two])
+            t_one = Hash[name: :one, depends_on: []]
+            t_two = Hash[name: :two, depends_on: []]
+            t_three = Hash[name: :three, depends_on: [:two]]
             graph = described_class.new(tasks: [t_one, t_two, t_three])
 
-            expect(graph.runnable_tasks).to contain_exactly(t_one, t_two)
+            expect(graph.runnable_tasks).to contain_exactly(
+              match_task(t_one),
+              match_task(t_two)
+            )
           end
+        end
+
+        def t(**opts)
+          Task.new(**opts)
+        end
+
+        def match_task(opts)
+          have_attributes(name: opts[:name])
         end
       end
     end

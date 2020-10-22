@@ -2,6 +2,7 @@
 
 require 'bundler/setup'
 require 'attr/gather'
+require 'pry'
 
 Dir['./spec/shared/**/*.rb'].each { |f| require(f) }
 
