@@ -1,19 +1,32 @@
 # frozen_string_literal: true
 
+require 'dry-equalizer'
+
 module Attr
   module Gather
     module Workflow
       # @api private
       class Task
-        attr_accessor :depends_on, :name
+        send :include, Dry::Equalizer(:name, :depends_on)
 
+        attr_accessor :name, :depends_on
+
+        # Initialize a new DeepMerge aggregator
+        #
+        # @param name [String] name of the task
+        # @param depends_on [Array<Task>] tasks needed before running this task
+        #
+        # @api private
         def initialize(name:, depends_on: [])
           @name = name
           @depends_on = depends_on
         end
 
+        # Check if this task depends on a given task
+        #
+        # @param other_task [Task] task to check
         def depends_on?(other_task)
-          depends_on.include?(other_task.name)
+          depends_on.include?(other_task)
         end
 
         def fullfilled_given_remaining_tasks?(task_list)

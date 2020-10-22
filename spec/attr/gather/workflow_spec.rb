@@ -66,6 +66,12 @@ module Attr
         )
       end
 
+      it 'has a chainable result' do
+        result = workflow.call(foo: :bar).then { |res| res.merge(chain: true) }
+
+        expect(result.value!).to include(chain: true)
+      end
+
       describe '.aggregator' do
         it 'has a configurable aggregator' do
           simple_workflow_class.aggregator(:shallow_merge)
@@ -158,6 +164,29 @@ module Attr
           result = workflow.call(foo: 'bar')
 
           expect(result.value!).to eql(foo: 'bar')
+        end
+
+        context 'when a task fails' do
+          let(:user_container) do
+            container = Dry::Container.new
+
+            container.register(:good) do |_input|
+              { email: 'test@test.com' }
+            end
+
+            container.register(:bad) do |_input|
+              raise 'oh no!'
+            end
+          end
+
+          it 'bubbles the exception' do
+            workflow = user_workflow_class.new
+            result = workflow.call({})
+
+            expect do
+              result.value!
+            end.to raise_error(RuntimeError, 'oh no!')
+          end
         end
       end
     end
