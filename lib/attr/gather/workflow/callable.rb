@@ -18,7 +18,7 @@ module Attr
         #
         # @param input [Hash]
         #
-        # @return [Concurrent::Promise]
+        # @return [Concurrent::Promise<Hash>]
         #
         # @note For more information, check out {https://dry-rb.org/gems/dry-monads/1.0/result}
         #
