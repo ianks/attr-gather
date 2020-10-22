@@ -6,8 +6,6 @@ module Attr
   module Gather
     module Aggregators
       RSpec.describe ShallowMerge do
-        include_context 'task execution result'
-
         context 'when used with default options' do
           subject(:aggregator) { described_class.new }
 

@@ -12,12 +12,10 @@ module Attr
         # Initialize a new DeepMerge aggregator
         #
         # @param reverse [Boolean] deep merge results in reverse order
-        # @param merge_input [Boolean] include input in aggregation result
         #
         # @api private
-        def initialize(reverse: false, merge_input: true, **)
+        def initialize(reverse: false, **)
           @reverse = reverse
-          @merge_input = merge_input
           super
         end
 
@@ -25,7 +23,7 @@ module Attr
           execution_results = execution_results.reverse_each if reverse?
           initial = unwrap_initial_input(input)
 
-          result = execution_results.reduce(initial) do |memo, res|
+          execution_results.reduce(initial) do |memo, res|
             deep_merge(memo, unwrap_result(res))
           end
         end
@@ -33,15 +31,11 @@ module Attr
         private
 
         def unwrap_initial_input(input)
-          merge_input? ? filter.call(input.dup).value : {}
+          input
         end
 
         def reverse?
           @reverse
-        end
-
-        def merge_input?
-          @merge_input
         end
 
         def deep_merge(hash, other)

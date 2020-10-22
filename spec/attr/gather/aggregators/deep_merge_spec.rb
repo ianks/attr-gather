@@ -6,8 +6,6 @@ module Attr
   module Gather
     module Aggregators
       RSpec.describe DeepMerge do
-        include_context 'task execution result'
-
         context 'when used with default options' do
           subject(:aggregator) { described_class.new }
 
@@ -52,23 +50,6 @@ module Attr
               )
 
               expect(res).to eql(user: { name: 'ian', id: 1 })
-            end
-          end
-        end
-
-        context 'when used with merge_input: false' do
-          subject(:aggregator) { described_class.new(merge_input: false) }
-
-          describe '#call' do
-            it 'does not inclue the input in the merged result' do
-              res = aggregator.call(
-                { user: { name: 'ian' } },
-                [
-                  val(user: { id: 1 })
-                ]
-              )
-
-              expect(res).to eql(user: { id: 1 })
             end
           end
         end

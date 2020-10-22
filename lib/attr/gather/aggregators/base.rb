@@ -19,6 +19,10 @@ module Attr
           @filter = opts.delete(:filter) || NOOP_FILTER
         end
 
+        def with(**opts)
+          self.class.new(filter: @filter, **opts)
+        end
+
         def call(_original_input, _results_array)
           raise NotImplementedError
         end
