@@ -85,8 +85,10 @@ GEM
     public_suffix (4.0.6)
     rainbow (3.0.0)
     rake (13.0.1)
+    regexp_parser (1.8.2)
     reverse_markdown (2.0.0)
       nokogiri
+    rexml (3.2.4)
     rspec (3.10.0)
       rspec-core (~> 3.10.0)
       rspec-expectations (~> 3.10.0)
@@ -100,13 +102,17 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.10.0)
     rspec-support (3.10.0)
-    rubocop (0.75.1)
-      jaro_winkler (~> 1.5.1)
+    rubocop (0.93.1)
       parallel (~> 1.10)
-      parser (>= 2.6)
+      parser (>= 2.7.1.5)
       rainbow (>= 2.2.2, < 4.0)
+      regexp_parser (>= 1.8)
+      rexml
+      rubocop-ast (>= 0.6.0)
       ruby-progressbar (~> 1.7)
-      unicode-display_width (>= 1.4.0, < 1.7)
+      unicode-display_width (>= 1.4.0, < 2.0)
+    rubocop-ast (1.1.0)
+      parser (>= 2.7.1.5)
     rubocop-performance (1.6.1)
       rubocop (>= 0.71.0)
     ruby-progressbar (1.10.1)
@@ -129,7 +135,7 @@ GEM
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.7)
-    unicode-display_width (1.6.1)
+    unicode-display_width (1.7.0)
     yard (0.9.25)
 
 PLATFORMS
