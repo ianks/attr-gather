@@ -4,7 +4,7 @@ require:
 AllCops:
   UseCache: true
   CacheRootDirectory: './tmp/cache'
-  TargetRubyVersion: 2.5
+  TargetRubyVersion: 2.4
   NewCops: enable
 
 Metrics/BlockLength:
