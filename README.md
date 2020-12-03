@@ -1,6 +1,7 @@
 # attr-gather
 
 ![Actions Status](https://github.com/ianks/attr-gather/workflows/Build%20+%20Test%20+%20Lint/badge.svg)
+[![Maintainability](https://api.codeclimate.com/v1/badges/b825a3bc37ad6a76e005/maintainability)](https://codeclimate.com/github/ianks/attr-gather/maintainability)
 
 A gem for creating workflows that "enhance" entities with extra attributes. At a high level, [attr-gather](https://github.com/ianks/attr-gather) provides a process to fetch information from many data sources (such as third party APIs, legacy databases, etc.) in a fully parallelized fashion.
 
