@@ -33,8 +33,7 @@ module Attr
 
         def serialize_row(task)
           row = all_dependants_for_task(task).map { |dt| [task, dt] }
-          lines = row.map { |item| item.map(&:name).join(' -> ') + ';' }
-          lines
+          row.map { |item| "#{item.map(&:name).join(' -> ')};" }
         end
 
         def all_dependants_for_task(input_task)

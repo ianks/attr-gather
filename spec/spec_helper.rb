@@ -4,11 +4,11 @@ require 'bundler/setup'
 require 'attr/gather'
 require 'pry'
 
-Dir['./spec/shared/**/*.rb'].each { |f| require(f) }
+Dir['./spec/shared/**/*.rb'].sort.each { |f| require(f) }
 
 module SpecHelpers
   def be_a_uuid
-    match(/[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}/) # rubocop:disable Metrics/LineLength
+    match(/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/)
   end
 end
 

@@ -63,30 +63,9 @@ module Attr
         # @yield [Attr::Gather::Workflow::Task] A task to configure
         #
         # @api public
-        alias fetch task
-
-        # Defines a task with name and options
-        #
-        # @param task_name [Symbol] the name of the task
-        #
-        # @example
-        #   class EnhanceUserProfile
-        #     include Attr::Gather::Workflow
-        #
-        #     # ...
-        #
-        #     fetch :user_info do |t|
-        #       t.depends_on = [:email_info]
-        #     end
-        #   end
-        #
-        # Calling `fetch` will yield a task object which you can configure like
-        # a PORO. Tasks will be registered for execution in the workflow.
-        #
-        # @yield [Attr::Gather::Workflow::Task] A task to configure
-        #
-        # @api public
-        alias gather task
+        def fetch(task_name, opts = EMPTY_HASH)
+          task(task_name, opts)
+        end
 
         # Defines a task with name and options
         #
@@ -99,7 +78,7 @@ module Attr
         #     # ...
         #
         #     step :fetch_user_info do |t|
-        #       t.depends_on = [:fetch_gravatar_info]
+        #       t.depends_on = [:email_info]
         #     end
         #   end
         #
@@ -109,7 +88,9 @@ module Attr
         # @yield [Attr::Gather::Workflow::Task] A task to configure
         #
         # @api public
-        alias step task
+        def step(task_name, opts = EMPTY_HASH)
+          task(task_name, opts)
+        end
 
         # Defines a container for task dependencies
         #

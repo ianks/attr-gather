@@ -13,7 +13,10 @@ pull_request_rules:
     conditions:
       - author~=^dependabot(|-preview)\[bot\]$
       - "#approved-reviews-by>=1"
-      - "check-success=build-test-lint"
+      - "check-success~=build-test-lint (2.4.x)"
+      - "check-success~=build-test-lint (2.5.x)"
+      - "check-success~=build-test-lint (2.6.x)"
+      - "check-success~=build-test-lint (2.7.x)"
     actions:
       merge:
         method: squash
