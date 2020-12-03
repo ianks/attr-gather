@@ -1,6 +1,6 @@
 # attr-gather
 
-[![Actions Status](https://github.com/ianks/attr-gather/workflows/.github/workflows/ruby.yml/badge.svg)](https://github.com/ianks/attr-gather/actions)
+[![Actions Status](https://github.com/ianks/attr-gather/workflows/Build%20+%20Test%20+%20Lint/badge.svg)]
 
 A gem for creating workflows that "enhance" entities with extra attributes. At a high level, [attr-gather](https://github.com/ianks/attr-gather) provides a process to fetch information from many data sources (such as third party APIs, legacy databases, etc.) in a fully parallelized fashion.
 
@@ -121,6 +121,12 @@ And this is the result...
     :gravatar => "https://www.gravatar.com/avatar/241af7d19a0a7438794aef21e4e19b79"
   }
 }
+```
+
+You can even preview it as an SVG!
+
+```ruby
+enhancer.to_dot(preview: true) # requires graphviz (brew install graphviz)
 ```
 
 ## Features
