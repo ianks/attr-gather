@@ -28,7 +28,7 @@ class MyContainer
   end
 
   register :email_info do |user:, **_attrs|
-    res = HTTP.timeout(3).get("https://api.trumail.io/v2/lookups/json?email=#{user[:email]}")
+    res = HTTP.get("https://api.trumail.io/v2/lookups/json?email=#{user[:email]}")
     info = JSON.parse(res.to_s, symbolize_names: true)
 
     { user: { email_info: { deliverable: info[:deliverable], free: info[:free] } } }
