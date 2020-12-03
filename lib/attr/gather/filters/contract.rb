@@ -14,8 +14,8 @@ module Attr
         # @param dry_contract [Dry::Contract]
         def initialize(dry_contract)
           validate_dry_contract!(dry_contract)
-
           @dry_contract = dry_contract
+          super()
         end
 
         def call(input)

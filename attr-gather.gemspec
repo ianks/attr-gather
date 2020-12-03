@@ -15,6 +15,8 @@ Gem::Specification.new do |spec|
   spec.homepage = 'https://github.com/ianks/attr-gather'
   spec.license = 'MIT'
 
+  spec.required_ruby_version = '>= 2.5'
+
   # spec.metadata["allowed_push_host"] = "TODO: Set to 'http://mygemserver.com'"
 
   spec.metadata['homepage_uri'] = spec.homepage
