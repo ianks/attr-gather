@@ -54,6 +54,23 @@ module Attr
           end
         end
 
+        context 'when used with merge_input: false' do
+          subject(:aggregator) { described_class.new(merge_input: false) }
+
+          describe '#call' do
+            it 'prioritizes results from earlier tasks' do
+              res = aggregator.call(
+                { user: { name: 'ian' } },
+                [
+                  val(user: { id: 1 })
+                ]
+              )
+
+              expect(res).to eql(user: { id: 1 })
+            end
+          end
+        end
+
         def val(hash)
           hash
         end
