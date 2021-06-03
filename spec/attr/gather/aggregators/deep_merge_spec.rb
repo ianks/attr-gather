@@ -33,6 +33,48 @@ module Attr
 
               expect(res).to eql(user: { name: 'ian', id: 2 })
             end
+
+            it 'merges arrays by default' do
+              res = aggregator.call(
+                { user: {} },
+                [
+                  val(user: { tags: [:foo] }),
+                  val(user: { tags: [:bar] })
+                ]
+              )
+
+              expect(res).to eql(user: { tags: %i[foo bar] })
+            end
+
+            it 'merges sets' do
+              res = aggregator.call(
+                { user: {} },
+                [
+                  val(user: { tags: [:foo].to_set }),
+                  val(user: { tags: [:foo].to_set })
+                ]
+              )
+
+              expect(res).to eql(user: { tags: [:foo].to_set })
+            end
+          end
+        end
+
+        context 'when used with array_strategy: :overwrite' do
+          subject(:aggregator) { described_class.new(array_strategy: :overwrite) }
+
+          describe '#call' do
+            it 'does not concat arrays' do
+              res = aggregator.call(
+                { user: {} },
+                [
+                  val(user: { tags: [:foo] }),
+                  val(user: { tags: [:bar] })
+                ]
+              )
+
+              expect(res).to eql(user: { tags: [:bar] })
+            end
           end
         end
 
