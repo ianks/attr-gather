@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    attr-gather (1.4.0)
+    attr-gather (1.5.0)
       dry-container (~> 0.7)
 
 GEM
@@ -155,4 +155,4 @@ DEPENDENCIES
   yard
 
 BUNDLED WITH
-   2.1.4
+   2.2.11
