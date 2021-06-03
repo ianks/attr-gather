@@ -12,17 +12,17 @@ module Attr
             graph = described_class.new
 
             expect do
-              graph << Hash[name: :foo, depends_on: [:does_not_exist]]
+              graph << ({ name: :foo, depends_on: [:does_not_exist] })
             end.to raise_error(TaskGraph::InvalidTaskDepedencyError)
           end
         end
 
         describe '#to_a' do
           it 'sorts tasks topologically' do
-            t_one = Hash[name: :one, depends_on: []]
-            t_two = Hash[name: :two, depends_on: [:one]]
-            t_three = Hash[name: :three, depends_on: [:two]]
-            t_four = Hash[name: :four, depends_on: [:three]]
+            t_one = { name: :one, depends_on: [] }
+            t_two = { name: :two, depends_on: [:one] }
+            t_three = { name: :three, depends_on: [:two] }
+            t_four = { name: :four, depends_on: [:three] }
 
             graph = described_class.new(tasks: [t_one, t_two, t_three, t_four])
             serialized = graph.to_a
@@ -36,10 +36,10 @@ module Attr
 
         describe '#each_strongly_connected_component' do
           it 'batches tasks topologically' do
-            t_one = Hash[name: :one, depends_on: []]
-            t_two = Hash[name: :two, depends_on: [:one]]
-            t_three = Hash[name: :three, depends_on: [:two]]
-            t_four = Hash[name: :four, depends_on: [:two]]
+            t_one = { name: :one, depends_on: [] }
+            t_two = { name: :two, depends_on: [:one] }
+            t_three = { name: :three, depends_on: [:two] }
+            t_four = { name: :four, depends_on: [:two] }
 
             graph = described_class.new(tasks: [t_one, t_two, t_three, t_four])
             serialized = graph.to_a
@@ -53,10 +53,10 @@ module Attr
 
         describe '#to_h' do
           it 'builds a hash of the deps' do
-            t_one = Hash[name: :one, depends_on: []]
-            t_two = Hash[name: :two, depends_on: [:one]]
-            t_three = Hash[name: :three, depends_on: [:two]]
-            t_four = Hash[name: :four, depends_on: [:two]]
+            t_one = { name: :one, depends_on: [] }
+            t_two = { name: :two, depends_on: [:one] }
+            t_three = { name: :three, depends_on: [:two] }
+            t_four = { name: :four, depends_on: [:two] }
 
             graph = described_class.new(tasks: [t_one, t_two, t_three, t_four])
 
@@ -73,10 +73,10 @@ module Attr
 
         describe '#to_dot' do
           it 'builds a dot string' do
-            t_one = Hash[name: :one, depends_on: []]
-            t_two = Hash[name: :two, depends_on: [:one]]
-            t_three = Hash[name: :three, depends_on: [:one]]
-            t_four = Hash[name: :four, depends_on: %i[two three]]
+            t_one = { name: :one, depends_on: [] }
+            t_two = { name: :two, depends_on: [:one] }
+            t_three = { name: :three, depends_on: [:one] }
+            t_four = { name: :four, depends_on: %i[two three] }
 
             graph = described_class.new(tasks: [t_one, t_two, t_three, t_four])
 
@@ -93,10 +93,10 @@ module Attr
 
         describe '#each_batch' do
           it 'yields batches of concurrently executable tasks' do
-            t_one = Hash[name: :one, depends_on: []]
-            t_two = Hash[name: :two, depends_on: [:one]]
-            t_three = Hash[name: :three, depends_on: [:two]]
-            t_four = Hash[name: :four, depends_on: [:two]]
+            t_one = { name: :one, depends_on: [] }
+            t_two = { name: :two, depends_on: [:one] }
+            t_three = { name: :three, depends_on: [:two] }
+            t_four = { name: :four, depends_on: [:two] }
 
             graph = described_class.new(tasks: [t_one, t_two, t_three, t_four])
             batches = graph.each_batch.to_a
@@ -111,9 +111,9 @@ module Attr
 
         describe '#runnable_tasks' do
           it 'yields batches of concurrently executable tasks' do
-            t_one = Hash[name: :one, depends_on: []]
-            t_two = Hash[name: :two, depends_on: []]
-            t_three = Hash[name: :three, depends_on: [:two]]
+            t_one = { name: :one, depends_on: [] }
+            t_two = { name: :two, depends_on: [] }
+            t_three = { name: :three, depends_on: [:two] }
             graph = described_class.new(tasks: [t_one, t_two, t_three])
 
             expect(graph.runnable_tasks).to contain_exactly(

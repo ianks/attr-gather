@@ -13,7 +13,7 @@ module Attr
       class Base
         attr_accessor :filter
 
-        NOOP_FILTER ||= Filters::Noop.new
+        NOOP_FILTER = Filters::Noop.new
 
         def initialize(**opts)
           @filter = opts.delete(:filter) || NOOP_FILTER

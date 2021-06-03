@@ -13,7 +13,7 @@ module Attr
         #
         # @param reverse [Boolean] deep merge results in reverse order
         # @param merge_input [Boolean] merge the result with the initial input
-        # @param concat_arrays [Boolean] concat nested arrays
+        # @param array_strategy [Symbol] strategy for handling arrays, one of (:concat, :overwrite)
         #
         # @api private
         def initialize(reverse: false, merge_input: true, array_strategy: :concat, **)
@@ -43,9 +43,9 @@ module Attr
         private_constant :ARRAY_STRATEGY
 
         def deep_merge(hash, other)
-          Hash[hash].merge(other) do |_, orig, new|
+          hash.to_h.merge(other) do |_, orig, new|
             if orig.respond_to?(:to_hash) && new.respond_to?(:to_hash)
-              deep_merge(Hash[orig], Hash[new])
+              deep_merge(orig.to_h, new.to_h)
             elsif concattable?(orig, new)
               orig + new
             else

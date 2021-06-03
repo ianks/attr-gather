@@ -38,7 +38,7 @@ module Attr
         def task(task_name, opts = EMPTY_HASH)
           conf = OpenStruct.new
           yield conf
-          tasks << Hash[name: task_name, **opts, **conf.to_h]
+          tasks << ({ name: task_name, **opts, **conf.to_h })
           self
         end
 
@@ -231,7 +231,7 @@ module Attr
         #
         # @api public
         def filter_with_contract(arg = nil, &blk)
-          contract = block_given? ? build_inline_contract_filter(&blk) : arg
+          contract = blk ? build_inline_contract_filter(&blk) : arg
           filter(:contract, contract)
         end
 

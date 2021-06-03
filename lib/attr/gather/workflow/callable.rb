@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'concurrent/promise'
+
 module Attr
   module Gather
     module Workflow

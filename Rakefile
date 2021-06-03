@@ -23,7 +23,7 @@ rescue LoadError
   warn 'Could not load yarddoc rake task'
 end
 
-task default: %i[spec lint]
+task default: %i[spec lint doc]
 
 namespace :examples do
   desc 'Run all examples'

@@ -9,6 +9,7 @@ module Attr
       # @api private
       class TaskGraph
         class UnfinishableError < StandardError; end
+
         class InvalidTaskDepedencyError < StandardError; end
 
         include TSort
