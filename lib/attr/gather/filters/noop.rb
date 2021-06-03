@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'attr/gather/filters/base'
+
 module Attr
   module Gather
     module Filters

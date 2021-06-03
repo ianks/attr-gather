@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'attr/gather/aggregators/base'
 require 'attr/gather/concerns/registrable'
 
 module Attr

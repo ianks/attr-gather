@@ -63,7 +63,7 @@ module Attr
           return @aggregator if defined?(@aggregator) && !@aggregator.nil?
 
           @aggregator = self.class.aggregator
-          @aggregator.filter ||= filter
+          @aggregator.filter ||= filter if @aggregator.respond_to?(:filter=)
 
           @aggregator
         end

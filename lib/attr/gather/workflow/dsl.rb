@@ -134,12 +134,21 @@ module Attr
         #     aggregator :deep_merge
         #   end
         #
+        # @example
+        #   class EnhanceUserProfile
+        #     include Attr::Gather::Workflow
+        #
+        #     aggregator MyCustomAggregator
+        #   end
+        #
         # @param agg [#call] the aggregator to use
         #
         # @api public
         def aggregator(agg = nil, opts = EMPTY_HASH)
           @aggregator = if agg.nil? && !defined?(@aggregator)
                           Aggregators.default
+                        elsif agg.respond_to?(:new)
+                          agg.new(filter: filter, **opts)
                         elsif agg
                           Aggregators.resolve(agg, filter: filter, **opts)
                         else

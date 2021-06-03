@@ -92,6 +92,22 @@ module Attr
 
           expect(result.value!).to eql(id: :first)
         end
+
+        it 'can accept a custom aggregator' do
+          custom = Class.new(Aggregators::Base) do
+            def call(*)
+              { foo: :bar }
+            end
+          end
+
+          simple_workflow_class.aggregator(custom)
+          simple_workflow_class.container(simple_container)
+
+          workflow = simple_workflow_class.new
+          result = workflow.call({})
+
+          expect(result.value!).to eql(foo: :bar)
+        end
       end
 
       describe '#uuid' do
