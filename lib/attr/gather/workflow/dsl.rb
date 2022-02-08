@@ -36,7 +36,7 @@ module Attr
         #
         # @api public
         def task(task_name, opts = EMPTY_HASH)
-          conf = OpenStruct.new
+          conf = OpenStruct.new # rubocop:disable Style/OpenStructUse
           yield conf
           tasks << ({ name: task_name, **opts, **conf.to_h })
           self
